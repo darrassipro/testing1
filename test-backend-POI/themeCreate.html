@@ -1,0 +1,70 @@
+<form id="themeForm" enctype="multipart/form-data">
+  <h2>Créer un Thème</h2>
+
+  <section>
+    <h3>Français</h3>
+    <input type="text" id="fr_name" placeholder="Nom (FR)" required>
+    <textarea id="fr_desc" placeholder="Description (FR)"></textarea>
+  </section>
+
+  <section>
+    <h3>Arabe</h3>
+    <input type="text" id="ar_name" placeholder="Nom (AR)" required>
+    <textarea id="ar_desc" placeholder="Description (AR)"></textarea>
+  </section>
+
+  <section>
+    <h3>Anglais</h3>
+    <input type="text" id="en_name" placeholder="Nom (EN)" required>
+    <textarea id="en_desc" placeholder="Description (EN)"></textarea>
+  </section>
+
+  <label>Couleur:</label>
+  <input type="color" id="color" value="#ff6600">
+
+  <label>Actif:</label>
+  <input type="checkbox" id="isActive" checked>
+
+  <label>Image principale:</label>
+  <input type="file" id="image" name="image" accept="image/*" required>
+
+  <label>Icône:</label>
+  <input type="file" id="icon" name="icon" accept="image/*" required>
+
+  <button type="submit">Créer</button>
+</form>
+
+<script>
+document.getElementById('themeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData();
+
+  const data = {
+    localizations: {
+      fr: { name: fr_name.value, desc: fr_desc.value },
+      ar: { name: ar_name.value, desc: ar_desc.value },
+      en: { name: en_name.value, desc: en_desc.value }
+    },
+    color: color.value,
+    isActive: isActive.checked
+  };
+
+  formData.append('data', JSON.stringify(data));
+  formData.append('image', document.getElementById('image').files[0]);
+  formData.append('icon', document.getElementById('icon').files[0]);
+
+  // 🧩 test local
+  for (let [key, val] of formData.entries()) {
+    console.log('🔹', key, val);
+  }
+
+  const res = await fetch('http://localhost:8080/api/themes/create-with-files', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const result = await res.json();
+  console.log('✅ Réponse serveur:', result);
+});
+</script>

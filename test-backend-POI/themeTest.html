@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mise à jour d’un Thème</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }
+    h2 { color: #007BFF; }
+    section { margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input[type="text"], textarea, select { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 5px; }
+    input[type="color"] { margin-top: 8px; }
+    button { margin-top: 12px; padding: 10px 18px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    pre { background: #272822; color: #eee; padding: 10px; border-radius: 6px; overflow-x: auto; }
+    .preview { font-size: 0.9em; color: #555; }
+  </style>
+</head>
+<body>
+
+  <h2>🖌️ Gestion des Thèmes</h2>
+
+  <section>
+    <label>ID du Thème :</label>
+    <input type="text" id="themeId" placeholder="Entrer l'ID du thème...">
+    <button id="loadThemeBtn">Charger le Thème</button>
+  </section>
+
+  <section id="themeFields" style="display:none;">
+    <h3>Détails du Thème</h3>
+
+    <label>Nom (FR)</label>
+    <input type="text" id="fr_name">
+    <label>Description (FR)</label>
+    <textarea id="fr_desc"></textarea>
+
+    <label>Nom (AR)</label>
+    <input type="text" id="ar_name">
+    <label>Description (AR)</label>
+    <textarea id="ar_desc"></textarea>
+
+    <label>Nom (EN)</label>
+    <input type="text" id="en_name">
+    <label>Description (EN)</label>
+    <textarea id="en_desc"></textarea>
+
+    <label>Couleur du thème</label>
+    <input type="color" id="color">
+
+    <label>Actif ?</label>
+    <input type="checkbox" id="isActive">
+
+    <label>Icône actuelle :</label>
+    <div id="currentIconInfo" class="preview"></div>
+    <input type="file" id="icon" accept="image/*">
+
+    <label>Image actuelle :</label>
+    <div id="currentImageInfo" class="preview"></div>
+    <input type="file" id="image" accept="image/*">
+
+    <button id="previewPayloadBtn">Prévisualiser Payload</button>
+    <button id="updateThemeBtn">Mettre à jour le Thème</button>
+    <button id="deleteThemeBtn" style="background-color:#dc3545;">Supprimer le Thème</button>
+  </section>
+
+  <section>
+    <h3>Sortie / Debug</h3>
+    <pre id="payloadBox">Aucune donnée...</pre>
+  </section>
+
+  <script>
+    const apiBase = 'http://localhost:8080/api';
+    const el = (id) => document.getElementById(id);
+
+    const payloadBox = el('payloadBox');
+    const themeFields = el('themeFields');
+    const currentIconInfo = el('currentIconInfo');
+    const currentImageInfo = el('currentImageInfo');
+
+    let currentTheme = null;
+
+    const safeParse = (jsonString) => {
+      if (!jsonString) return {};
+      if (typeof jsonString === 'object') return jsonString;
+      try { return JSON.parse(jsonString); }
+      catch { return {}; }
+    };
+
+    async function fetchJson(url, options = {}) {
+      const res = await fetch(url, { credentials: 'include', ...options });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || `Erreur HTTP ${res.status}`);
+      return data;
+    }
+
+    async function loadTheme(id) {
+      payloadBox.textContent = "Chargement du thème...";
+      themeFields.style.display = "none";
+
+      try {
+        const data = await fetchJson(`${apiBase}/themes/${id}`);
+        currentTheme = data.data;
+        if (!currentTheme) throw new Error("Thème introuvable");
+
+        // localisations
+        const fr = safeParse(currentTheme.fr);
+        const ar = safeParse(currentTheme.ar);
+        const en = safeParse(currentTheme.en);
+
+        el('fr_name').value = fr.name || '';
+        el('fr_desc').value = fr.desc || '';
+        el('ar_name').value = ar.name || '';
+        el('ar_desc').value = ar.desc || '';
+        el('en_name').value = en.name || '';
+        el('en_desc').value = en.desc || '';
+
+        el('color').value = currentTheme.color || '#000000';
+        el('isActive').checked = !!currentTheme.isActive;
+
+        currentIconInfo.textContent = currentTheme.icon || 'Aucune icône';
+        currentImageInfo.textContent = currentTheme.image || 'Aucune image';
+
+        showJson(currentTheme);
+        themeFields.style.display = "block";
+      } catch (err) {
+        payloadBox.textContent = "❌ " + err.message;
+      }
+    }
+
+    function buildPayload() {
+      const localizations = {
+        fr: { name: el('fr_name').value.trim(), desc: el('fr_desc').value.trim() },
+        ar: { name: el('ar_name').value.trim(), desc: el('ar_desc').value.trim() },
+        en: { name: el('en_name').value.trim(), desc: el('en_desc').value.trim() }
+      };
+
+      return {
+        localizations,
+        color: el('color').value,
+        isActive: el('isActive').checked
+      };
+    }
+
+    function showJson(obj) {
+      payloadBox.textContent = JSON.stringify(obj, null, 2);
+    }
+
+    el('loadThemeBtn').addEventListener('click', () => {
+      const id = el('themeId').value.trim();
+      if (!id) return alert("Entrez un ID valide");
+      loadTheme(id);
+    });
+
+    el('previewPayloadBtn').addEventListener('click', () => {
+      showJson(buildPayload());
+    });
+
+    el('updateThemeBtn').addEventListener('click', async () => {
+      if (!currentTheme) return alert("Chargez un thème d'abord.");
+      const id = el('themeId').value.trim();
+      const payload = buildPayload();
+
+      try {
+        const formData = new FormData();
+        formData.append('data', JSON.stringify(payload));
+
+        const iconFile = el('icon').files[0];
+        const imageFile = el('image').files[0];
+        if (iconFile) formData.append('icon', iconFile);
+        if (imageFile) formData.append('image', imageFile);
+
+        const res = await fetch(`${apiBase}/themes/${id}`, {
+          method: 'PUT',
+          body: formData,
+          credentials: 'include'
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Erreur mise à jour");
+
+        payloadBox.textContent = "✅ Thème mis à jour avec succès:\n" + JSON.stringify(data, null, 2);
+      } catch (err) {
+        payloadBox.textContent = "❌ " + err.message;
+      }
+    });
+
+    el('deleteThemeBtn').addEventListener('click', async () => {
+      if (!currentTheme) return alert("Chargez un thème d'abord.");
+      const id = el('themeId').value.trim();
+      if (!confirm("Voulez-vous vraiment supprimer ce thème ?")) return;
+
+      try {
+        const res = await fetch(`${apiBase}/themes/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Erreur suppression");
+
+        payloadBox.textContent = "🗑️ Thème supprimé avec succès:\n" + JSON.stringify(data, null, 2);
+        themeFields.style.display = "none";
+      } catch (err) {
+        payloadBox.textContent = "❌ " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

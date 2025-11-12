@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modification de Circuit - Go Fez</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .inline-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .data-box { background: #f8f9fa; border: 1px solid #e1e4e8; padding: 12px; border-radius: 8px; max-height: 220px; overflow: auto; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-edit"></i> Modification de Circuit</h1>
+            <p>Entrez l'ID du circuit pour le charger et le modifier.</p>
+            <div class="form-actions inline-actions">
+                <a href="index.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Retour</a>
+                <button type="button" id="getThemesBtn" class="btn btn-secondary"><i class="fas fa-tags"></i> getThemes</button>
+                <button type="button" id="getPoisBtn" class="btn btn-secondary"><i class="fas fa-map-marker-alt"></i> getPois</button>
+            </div>
+        </header>
+
+        <form id="circuitForm" enctype="multipart/form-data">
+        <section class="form-section">
+            <h2><i class="fas fa-key"></i> Charger le Circuit</h2>
+            <div class="form-group inline-actions" style="gap: 15px;">
+                <label for="circuitId">ID du Circuit *</label>
+                <input type="text" id="circuitId" required placeholder="Ex: 56090341-ee9f-47a2-875e-7663dfd60bfa" style="flex-grow: 1;">
+                <button type="button" id="loadCircuitBtn" class="btn btn-info"><i class="fas fa-download"></i> Charger</button>
+            </div>
+        </section>
+        
+        <section class="form-section" id="circuitFields" style="display: none;">
+            <h2><i class="fas fa-info-circle"></i> informations du Circuit</h2>
+            <div class="form-group">
+                <label for="cityId">Ville *</label>
+                <select id="cityId" required>
+                    <option value="">Sélectionner une ville</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Durée (heures) *</label>
+                <input type="number" id="duration" step="0.1" placeholder="ex: 4.5">
+            </div>
+            <div class="form-group">
+                <label>Distance (km) *</label>
+                <input type="number" id="distance" step="0.1" placeholder="ex: 10.2">
+            </div>
+
+            <div class="form-group">
+                <label>Localisations</label>
+                <div class="language-section">
+                    <h3>Français</h3>
+                    <input type="text" id="fr_name" placeholder="Nom (FR)">
+                    <textarea id="fr_desc" rows="2" placeholder="Description (FR)"></textarea>
+                </div>
+                <div class="language-section">
+                    <h3>Arabe</h3>
+                    <input type="text" id="ar_name" placeholder="Nom (AR)">
+                    <textarea id="ar_desc" rows="2" placeholder="Description (AR)"></textarea>
+                </div>
+                <div class="language-section">
+                    <h3>Anglais</h3>
+                    <input type="text" id="en_name" placeholder="Nom (EN)">
+                    <textarea id="en_desc" rows="2" placeholder="Description (EN)"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Options</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="isActive" checked>
+                        <span class="checkmark"></span>
+                        Actif
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="isPremium">
+                        <span class="checkmark"></span>
+                        Premium
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="themeIds">Thèmes *</label>
+                <select id="themeIds" multiple required>
+                    <option value="">Sélectionner des thèmes</option>
+                </select>
+                <small>Maintenez Ctrl pour sélectionner plusieurs thèmes</small>
+            </div>
+            <div class="form-group">
+                <label for="poiIds">POIs *</label>
+                <select id="poiIds" multiple required>
+                    <option value="">Sélectionner des POIs</option>
+                </select>
+                <small>Maintenez Ctrl pour sélectionner plusieurs POIs</small>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Image du Circuit (laisser vide pour ne pas changer)</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                <small id="currentImageInfo"></small>
+                <small>Formats acceptés: JPG, PNG, GIF, WebP (Max: 5MB)</small>
+            </div>
+
+            <div class="form-actions inline-actions">
+                <button type="button" id="previewPayloadBtn" class="btn btn-secondary"><i class="fas fa-eye"></i> Prévisualiser Payload</button>
+                <button type="button" id="updateCircuitBtn" class="btn btn-primary"><i class="fas fa-upload"></i> Mettre à jour le Circuit</button>
+            </div>
+        </section>
+
+        </form>
+
+        <section class="form-section">
+            <h2><i class="fas fa-database"></i> Données récupérées</h2>
+            <div class="data-box mono" id="themesBox">Cliquer sur getThemes pour charger les thèmes…</div>
+            <div class="data-box mono" id="poisBox" style="margin-top:8px;">Cliquer sur getPois pour charger les POIs…</div>
+        </section>
+
+        <section class="form-section">
+            <h2><i class="fas fa-code"></i> Payload JSON / Réponse</h2>
+            <div class="data-box mono" id="payloadBox">Cliquez sur "Charger" pour récupérer le circuit…</div>
+        </section>
+    </div>
+
+    <script src="circuitUpdateForm.js"></script>
+</body>
+</html>

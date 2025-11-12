@@ -1,0 +1,402 @@
+  {
+    "Leaderboard": {
+      "title": "لوحة الصدارة",
+      "subtitle": "شاهد ترتيبك بين المستخدمين الآخرين.",
+      "loading": "جاري تحميل لوحة الصدارة...",
+      "noResults": "لا توجد نتائج للوحة الصدارة.",
+      "rank": "الترتيب",
+      "player": "المستخدم",
+      "level": "المستوى",
+      "points": "النقاط"
+    },
+  "common": {
+    "viewAll": "عرض الكل"
+  },
+  "hello": "مرحبا",
+  "nav": {
+    "home": "الرئيسية",
+    "routes": "المسارات",
+    "pois": "نقاط الاهتمام",
+    "rewards": "المكافآت",
+    "partners": "الشركاء",
+    "contact": "اتصل بنا"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "signup": "التسجيل"
+  },
+  "Login": {
+    "title": "تسجيل الدخول",
+    "description": "سجل الدخول إلى حسابك للمتابعة",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "submit": "تسجيل الدخول",
+    "loading": "جاري تسجيل الدخول...",
+    "orContinueWith": "أو المتابعة باستخدام",
+    "noAccount": "ليس لديك حساب؟",
+    "signUp": "إنشاء حساب",
+    "success": "تم تسجيل الدخول بنجاح! مرحبا بك.",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    "fillFields": "يرجى ملء جميع الحقول."
+  },
+  "SignUp": {
+    "title": "إنشاء حساب",
+    "description": "أنشئ حسابك لتبدأ",
+    "firstName": "الاسم الأول",
+    "firstNamePlaceholder": "جون",
+    "lastName": "اسم العائلة",
+    "lastNamePlaceholder": "دو",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف (اختياري)",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "submit": "إنشاء حساب",
+    "loading": "جاري الإنشاء...",
+    "alreadyAccount": "هل لديك حساب بالفعل؟",
+    "login": "تسجيل الدخول",
+    "orSignUpWith": "أو التسجيل باستخدام",
+    "success": "تم التسجيل بنجاح! الرجاء تسجيل الدخول.",
+    "checkEmail": "يرجى التحقق من بريدك الإلكتروني للحصول على رمز التحقق",
+    "error": "خطأ أثناء التسجيل. قد يكون البريد الإلكتروني أو الهاتف موجودًا بالفعل."
+  },
+  "OTPVerification": {
+    "title": "تحقق من بريدك الإلكتروني",
+    "description": "لقد أرسلنا رمز التحقق إلى",
+    "expiresIn": "تنتهي صلاحية الرمز في 10 دقائق",
+    "invalidOTP": "الرجاء إدخال رمز صالح مكون من 6 أرقام",
+    "success": "تم التحقق من البريد الإلكتروني بنجاح!",
+    "error": "فشل التحقق. يرجى المحاولة مرة أخرى.",
+    "otpResent": "تم إرسال رمز جديد إلى بريدك الإلكتروني",
+    "resendError": "فشل إعادة إرسال الرمز",
+    "resending": "جاري الإرسال...",
+    "resendCode": "إعادة إرسال الرمز",
+    "resendIn": "إعادة إرسال الرمز في",
+    "verifying": "جاري التحقق...",
+    "verify": "تحقق من البريد الإلكتروني",
+    "backToSignup": "العودة إلى التسجيل"
+  },
+  "ForgotPassword": {
+    "title": "هل نسيت كلمة المرور؟",
+    "description": "أدخل عنوان بريدك الإلكتروني وسنرسل لك رمز إعادة التعيين",
+    "email": "البريد الإلكتروني",
+    "otpSent": "تم إرسال رمز OTP بنجاح إلى بريدك الإلكتروني",
+    "error": "خطأ في إرسال رمز OTP",
+    "sending": "جاري الإرسال...",
+    "sendCode": "إرسال الرمز",
+    "backToLogin": "العودة إلى تسجيل الدخول"
+  },
+  "PasswordResetOTP": {
+    "title": "تحقق من رمزك",
+    "description": "لقد أرسلنا رمز إعادة التعيين إلى",
+    "expiresIn": "تنتهي صلاحية الرمز في 10 دقائق",
+    "invalidOTP": "الرجاء إدخال رمز صالح مكون من 6 أرقام",
+    "success": "تم التحقق من رمز OTP بنجاح!",
+    "error": "فشل التحقق",
+    "otpResent": "تم إرسال رمز جديد إلى بريدك الإلكتروني",
+    "resendError": "فشل إعادة إرسال الرمز",
+    "resending": "جاري الإرسال...",
+    "resendCode": "إعادة إرسال الرمز",
+    "resendIn": "إعادة إرسال الرمز في",
+    "verifying": "جاري التحقق...",
+    "verify": "تحقق",
+    "back": "رجوع"
+  },
+  "ResetPassword": {
+    "title": "كلمة مرور جديدة",
+    "description": "قم بتعيين كلمة مرور جديدة آمنة لحسابك",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "passwordsDontMatch": "كلمات المرور غير متطابقة",
+    "invalidResponse": "استجابة غير صالحة من الخادم",
+    "success": "تم إعادة تعيين كلمة المرور بنجاح!",
+    "error": "خطأ في إعادة تعيين كلمة المرور",
+    "updating": "جاري التحديث...",
+    "validate": "التحقق",
+    "back": "رجوع"
+  },
+  "hero": {
+    "discover": "اكتشف",
+    "fez": "فاس",
+    "through": "من خلال المسارات التفاعلية والإرشاد الذكي",
+    "subtitle": "دليلك الشخصي لاستكشاف موقع التراث العالمي لليونسكو فاس البالي",
+    "search": "ابحث عن الوجهات...",
+    "searchButton": "بحث"
+  },
+  "filters": {
+    "museums": "المتاحف",
+    "restaurants": "المطاعم",
+    "monuments": "المعالم الأثرية",
+    "markets": "الأسواق"
+  },
+  "featuresSection": {
+    "title": "استكشف بذكاء، سافر بعمق",
+    "subtitle": "أطلق العنان للإمكانات الكاملة لمغامرتك في فاس"
+  },
+  "features": {
+    "routes": {
+      "title": "مسارات تفاعلية",
+      "description": "تنقل بسهولة عبر مسارات موجهة بنظام تحديد المواقع"
+    },
+    "audio": {
+      "title": "معرض صوتي والواقع الافتراضي",
+      "description": "تجربة وسائط متعددة غامرة"
+    },
+    "rewards": {
+      "title": "العب واكسب المكافآت",
+      "description": "افتح الإنجازات والجوائز"
+    },
+    "offline": {
+      "title": "الوصول دون اتصال",
+      "description": "قم بتنزيل الخرائط للاستخدام دون اتصال"
+    }
+  },
+  "themes": {
+    "historical": "المواقع التاريخية",
+    "cuisine": "المطبخ المحلي",
+    "crafts": "الحرف التقليدية",
+    "architecture": "الهندسة المعمارية"
+  },
+  "circuits": {
+    "medina": "جولة المدينة",
+    "palace": "جولة القصر الملكي",
+    "souks": "الأسواق",
+    "tanneries": "نزهة المدابغ",
+    "garden": "طريق الحدائق"
+  },
+  "card": {
+    "stops": "محطات",
+    "viewRoutes": "عرض المسارات",
+    "badge": {
+      "theme": "موضوع",
+      "circuit": "دائرة"
+    }
+  },
+  "exploreTheme": {
+    "title": "استكشف فاس حسب الموضوع",
+    "subtitle": "اكتشف فاس من خلال تجارب موضوعية منظمة"
+  },
+  "exploreCircuit": {
+    "title": "استكشف فاس حسب الدائرة"
+  },
+  "discoverMap": {
+    "title": "اكتشف فاس في الوقت الفعلي",
+    "searchPlaceholder": "ابحث عن مطعم، مقهى، تسوق...",
+    "yourLocation": "موقعك"
+  },
+  "download": {
+    "title": "عزز زيارتك مع الإرشاد بنظام تحديد المواقع وجولات 360 درجة",
+    "description": "تنقل في شوارع فاس المتعرجة بثقة. احصل على اتجاهات خطوة بخطوة وتجارب غامرة.",
+    "appStore": "متجر التطبيقات",
+    "googlePlay": "جوجل بلاي",
+    "appPreview": "استكشف فاس"
+  },
+  "footer": {
+    "description": "رفيقك الموثوق لاستكشاف مدينة فاس القديمة. اكتشف الجواهر المخفية، تنقل بثقة، وانغمس في ثقافة غنية.",
+    "links": "روابط",
+    "explore": "استكشف",
+    "about": "حول",
+    "language": "اللغة",
+    "copyright": "© 2025 - جو فاس. جميع الحقوق محفوظة"
+  },
+  "ThemePage": {
+  "home": "الرئيسية",
+  "themes": "المسارات",
+  "searchPlaceholder": "ابحث عن مطعم، مقهى، تسوق...",
+  "errorTitle": "خطأ في التحميل",
+  "errorMessage": "تعذر تحميل تفاصيل هذا الموضوع.",
+  "goBack": "العودة",
+  "themeTitle": "الموضوع",
+  "duration": "{minutes} دقيقة",
+  "pois": "{count} نقاط اهتمام",
+  "difficulty": "الصعوبة: {value}",
+  "viewCircuitDetails": "عرض تفاصيل المسار",
+  "noPoisForCircuit": "لم يتم العثور على نقاط اهتمام لهذا المسار.",
+  "noCircuitsTitle": "لم يتم العثور على مسارات",
+  "noCircuitsMessage": "لا توجد حالياً مسارات نشطة مرتبطة بهذا الموضوع."
+  },
+  "PoiDetailPage": {
+    "loading": "جاري تحميل النقطة...",
+    "error": "خطأ في تحميل البيانات.",
+    "notFound": "النقطة غير موجودة.",
+    "notAvailable": "غير متوفر",
+    "premium": "مميز"
+  },
+
+  "CircuitDetailPage": {
+    "loading": "جاري تحميل المسار...",
+    "error": "تعذر تحميل تفاصيل المسار.",
+    "startSuccess": "تم بدء المسار بنجاح!",
+    "startError": "خطأ في بدء المسار.",
+    "aboutTitle": "حول هذا المسار",
+    "stopsTitle": "مراحل المسار",
+    "infoTitle": "معلومات أساسية",
+    "km": "كم",
+    "min": "دقيقة",
+    "stops": "محطات",
+    "premium": "مسار مميز",
+    "starting": "جاري البدء...",
+    "startButton": "ابدأ هذا المسار",
+    "circuitImageAlt": "صورة غلاف المسار",
+    "customCircuit": "مسار مخصص",
+    "customCircuitInfo": "هذا مسارك المخصص"
+  },
+
+  "Circuits": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ في التحميل",
+    "poiVisitedSuccess": "تم تحديد النقطة كزيارة!",
+    "poiVisitedError": "خطأ في التحقق من النقطة.",
+    "circuitComplete": "تهانينا! لقد أكملت هذا المسار!",
+    "nextStep": "التالي",
+    "prevStep": "السابق",
+    "markAsVisited": "وضع علامة كزيارة",
+    "completed": "مكتمل"
+  },
+
+  "CircuitNavigation": {
+    "step": "المرحلة",
+    "prev": "السابق",
+    "next": "التالي",
+    "markAsVisited": "وضع علامة كزيارة",
+    "visited": "تمت الزيارة",
+    "yourLocation": "أنت هنا",
+    "currentPOI": "النقطة الحالية",
+    "completedPOI": "نقطة تمت زيارتها",
+    "loading": "جاري التحميل...",
+    "error": "خطأ في التحميل"
+  },
+
+  "AudioPlayer": {
+    "title": "دليل صوتي",
+    "selectLanguage": "اختر اللغة",
+    "noAudio": "لا يوجد ملف صوتي"
+  },
+  "ShareButtons": {
+    "title": "شارك هذا المكان",
+    "emailBody": "اكتشف هذا المكان:",
+    "shareSuccess": "تم المشاركة بنجاح!",
+    "shareSuccessDesc": "شكراً لمشاركة هذا المحتوى!",
+    "linkCopied": "تم نسخ الرابط!",
+    "linkCopiedDesc": "تم نسخ الرابط إلى الحافظة.",
+    "copyError": "خطأ",
+    "copyErrorDesc": "تعذر نسخ الرابط.",
+    "copied": "تم النسخ!",
+    "copyLink": "نسخ الرابط"
+  },
+  "header": {
+    "circuits": "المسارات",
+    "pois": "نقاط الاهتمام",
+    "admin": "الإدارة",
+    "profile": "الملف الشخصي",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج"
+  },
+  "ReviewForm": {
+    "title": "اترك تقييمًا",
+    "yourRating": "تقييمك",
+    "yourComment": "تعليقك",
+    "commentPlaceholder": "شارك تجربتك...",
+    "submit": "إرسال",
+    "submitting": "جاري الإرسال...",
+    "ratingRequired": "الرجاء اختيار تقييم.",
+    "successTitle": "تم إرسال التقييم!"
+  },
+  "ReviewList": {
+    "title": "التقييمات",
+    "loading": "جاري تحميل التقييمات...",
+    "error": "خطأ في تحميل التقييمات",
+    "noReviews": "لا توجد تقييمات حتى الآن.",
+    "previous": "السابق",
+    "next": "التالي",
+    "page": "صفحة",
+    "pending": "قيد المراجعة"
+  },
+  "GamificationProfile": {
+    "points": "النقاط",
+    "level": "المستوى",
+    "badges": "الشارات",
+    "leaderboard": "لوحة المتصدرين",
+    "Leaderboard": {
+      "title": "لوحة المتصدرين"
+    },
+    "totalPoints": "إجمالي النقاط",
+    "nextLevel": "المستوى التالي",
+    "earnedBadges": "الشارات المكتسبة",
+    "lockedBadges": "الشارات المقفلة",
+    "rank": "الترتيب",
+    "user": "المستخدم",
+    "loading": "جاري التحميل...",
+    "error": "خطأ في التحميل",
+    "myBadges": "شاراتي",
+    "noBadges": "لم تحصل على أي شارات بعد",
+    "earnBadgesHint": "أكمل الأنشطة لكسب الشارات!",
+  "badgesEarned": "{count} شارات مكتسبة",
+  "pointsToNextLevel": "{count} نقطة للوصول إلى المستوى التالي"
+  },
+  "PoisPage": {
+    "loading": "جاري تحميل نقاط الاهتمام...",
+    "error": "خطأ في تحميل نقاط الاهتمام",
+    "title": "اكتشف نقاط الاهتمام",
+    "subtitle": "استكشف المواقع والمعالم الرائعة في فاس",
+    "noPois": "لم يتم العثور على نقاط اهتمام"
+  },
+  "ReviewSection": {
+    "reviewsTitle": "التقييمات",
+    "loading": "جاري تحميل التقييمات...",
+    "error": "خطأ في تحميل التقييمات",
+    "noReviews": "لا توجد تقييمات حتى الآن",
+    "writeReview": "اكتب تقييماً"
+  },
+  "POICard": {
+    "premium": "مميز",
+    "duration": "{minutes} دقيقة",
+    "pois": "{count} نقاط اهتمام",
+    "difficulty": "الصعوبة: {value}",
+    "viewCircuitDetails": "عرض تفاصيل المسار",
+    "noPoisForCircuit": "لم يتم العثور على نقاط اهتمام لهذا المسار"
+  },
+  "CircuitsPage": {
+    "title": "اكتشف مساراتنا",
+    "subtitle": "استكشف فاس من خلال مسارات موضوعية ومخصصة.",
+    "loading": "جاري تحميل المسارات...",
+    "error": "تعذر تحميل المسارات.",
+    "noCircuits": "لم يتم العثور على مسارات في الوقت الحالي.",
+    "createButton": "إنشاء مسار",
+    "allCircuits": "جميع المسارات",
+    "officialCircuits": "المسارات الرسمية",
+    "customCircuits": "مساراتي المخصصة",
+    "noOfficialCircuits": "لا توجد مسارات رسمية متاحة في الوقت الحالي.",
+    "noCustomCircuits": "لا توجد مسارات مخصصة بعد. أنشئ أول مسار لك!"
+  },
+  "CircuitCard": {
+    "km": "كم",
+    "min": "دقيقة",
+    "customCircuit": "مسار مخصص"
+  },
+  "PoiFilters": {
+    "searchPlaceholder": "ابحث عن نقطة اهتمام...",
+    "categoryPlaceholder": "اختر فئة",
+    "cityPlaceholder": "اختر مدينة",
+    "allCategories": "جميع الفئات",
+    "allCities": "جميع المدن",
+    "premiumOnly": "مميز فقط"
+  },
+  "Pois": {
+    "loading": "جارٍ تحميل نقاط الاهتمام...",
+    "error": "خطأ في تحميل نقاط الاهتمام.",
+    "noPois": "لم يتم العثور على نقاط اهتمام."
+  },
+  "ThemesPage": {
+     "home": "الرئيسية",
+     "themes": "المواضيع",
+     "searchPlaceholder": "ابحث عن مطعم، مقهى، تسوق...",
+     "loading": "جاري تحميل المواضيع...",
+     "error": "خطأ في تحميل المواضيع",
+     "title": "استكشف فاس حسب الموضوع",
+     "subtitle": "اكتشف كنوز فاس مرتبة حسب الموضوع",
+     "noThemes": "لا توجد مواضيع متاحة"
+  }
+}

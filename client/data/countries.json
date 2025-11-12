@@ -1,0 +1,9 @@
+[
+  { "name": "Morocco", "dial_code": "+212", "code": "MA", "flag": "🇲🇦" },
+  { "name": "France", "dial_code": "+33", "code": "FR", "flag": "🇫🇷" },
+  { "name": "United States", "dial_code": "+1", "code": "US", "flag": "🇺🇸" },
+  { "name": "Spain", "dial_code": "+34", "code": "ES", "flag": "🇪🇸" },
+  { "name": "Germany", "dial_code": "+49", "code": "DE", "flag": "🇩🇪" }
+]
+
+

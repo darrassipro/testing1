@@ -1,0 +1,396 @@
+  {
+    "Leaderboard": {
+      "title": "Leaderboard",
+      "subtitle": "See how you rank among other users.",
+      "loading": "Loading leaderboard...",
+      "noResults": "No leaderboard results found.",
+      "rank": "Rank",
+      "player": "Player",
+      "level": "Level",
+      "points": "Points"
+    },
+  "common": {
+    "viewAll": "View all"
+  },
+  "hello": "Hello",
+  "nav": {
+    "home": "HOME",
+    "routes": "ROUTES",
+    "pois": "POIs",
+    "rewards": "Rewards",
+    "partners": "Partners",
+    "contact": "Contact US"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up"
+  },
+  "Login": {
+    "title": "Login",
+    "description": "Sign in to your account to continue",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "submit": "Log In",
+    "loading": "Logging in...",
+    "orContinueWith": "Or continue with",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "success": "Login successful! Welcome.",
+    "invalidCredentials": "Invalid email or password.",
+    "fillFields": "Please fill in all fields."
+  },
+  "SignUp": {
+    "title": "Sign Up",
+    "description": "Create your account to get started",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "John",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Doe",
+    "email": "Email",
+    "phone": "Phone (Optional)",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "submit": "Create Account",
+    "loading": "Creating...",
+    "alreadyAccount": "Already have an account?",
+    "login": "Log In",
+    "orSignUpWith": "Or sign up with",
+    "success": "Registration successful! Please log in.",
+    "checkEmail": "Please check your email for verification code",
+    "error": "Error during sign up. The email or phone may already exist."
+  },
+  "OTPVerification": {
+    "title": "Verify Your Email",
+    "description": "We sent a verification code to",
+    "expiresIn": "Code expires in 10 minutes",
+    "invalidOTP": "Please enter a valid 6-digit code",
+    "success": "Email verified successfully!",
+    "error": "Verification failed. Please try again.",
+    "otpResent": "New code sent to your email",
+    "resendError": "Failed to resend code",
+    "resending": "Resending...",
+    "resendCode": "Resend Code",
+    "resendIn": "Resend code in",
+    "verifying": "Verifying...",
+    "verify": "Verify Email",
+    "backToSignup": "Back to Sign Up"
+  },
+  "ForgotPassword": {
+    "title": "Forgot Password?",
+    "description": "Enter your email address and we'll send you a reset code",
+    "email": "Email",
+    "otpSent": "OTP code sent successfully to your email",
+    "error": "Error sending OTP code",
+    "sending": "Sending...",
+    "sendCode": "Send Code",
+    "backToLogin": "Back to Login"
+  },
+  "PasswordResetOTP": {
+    "title": "Verify Your Code",
+    "description": "We sent a reset code to",
+    "expiresIn": "Code expires in 10 minutes",
+    "invalidOTP": "Please enter a valid 6-digit code",
+    "success": "OTP code verified successfully!",
+    "error": "Verification failed",
+    "otpResent": "New code sent to your email",
+    "resendError": "Failed to resend code",
+    "resending": "Resending...",
+    "resendCode": "Resend Code",
+    "resendIn": "Resend code in",
+    "verifying": "Verifying...",
+    "verify": "Verify",
+    "back": "Back"
+  },
+  "ResetPassword": {
+    "title": "New Password",
+    "description": "Set a secure new password for your account",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "passwordsDontMatch": "Passwords do not match",
+    "invalidResponse": "Invalid server response",
+    "success": "Password reset successfully!",
+    "error": "Error resetting password",
+    "updating": "Updating...",
+    "validate": "Validate",
+    "back": "Back"
+  },
+  "hero": {
+    "discover": "Discover",
+    "fez": "Fez",
+    "through": "Through Interactive Routes and Smart Guidance",
+    "subtitle": "Your personal guide to exploring the UNESCO World Heritage site of Fez el-Bali",
+    "search": "Search destinations...",
+    "searchButton": "Search"
+  },
+  "filters": {
+    "museums": "Museums",
+    "restaurants": "Restaurants",
+    "monuments": "Monuments",
+    "markets": "Markets"
+  },
+  "featuresSection": {
+    "title": "Explore Smarter, Travel Deeper",
+    "subtitle": "Unlock the full potential of your Fez adventure"
+  },
+  "features": {
+    "routes": {
+      "title": "Interactive Routes",
+      "description": "Navigate with ease through GPS-guided paths"
+    },
+    "audio": {
+      "title": "Audio & VR Gallery",
+      "description": "Immersive multimedia experience"
+    },
+    "rewards": {
+      "title": "Play & Earn Rewards",
+      "description": "Unlock achievements and prizes"
+    },
+    "offline": {
+      "title": "Offline Access",
+      "description": "Download maps for offline use"
+    }
+  },
+  "themes": {
+    "historical": "Historical Sites",
+    "cuisine": "Local Cuisine",
+    "crafts": "Traditional Crafts",
+    "architecture": "Architecture"
+  },
+  "circuits": {
+    "medina": "Medina Circuit",
+    "palace": "Royal Palace Tour",
+    "souks": "Souks & Markets",
+    "tanneries": "Tanneries Walk",
+    "garden": "Garden Path"
+  },
+  "card": {
+    "stops": "stops",
+    "viewRoutes": "View Routes",
+    "badge": {
+      "theme": "Theme",
+      "circuit": "Circuit"
+    }
+  },
+  "exploreTheme": {
+    "title": "EXPLORE FEZ BY THEME",
+    "subtitle": "Discover Fez through curated thematic experiences"
+  },
+  "exploreCircuit": {
+    "title": "Explore Fez by Circuit"
+  },
+  "discoverMap": {
+    "title": "Discover Fez in Real Time",
+    "searchPlaceholder": "Search for restaurant, coffee, shopping...",
+    "yourLocation": "Your Location"
+  },
+  "download": {
+    "title": "Enhance Your Visit with GPS Guidance and 360° Tours",
+    "description": "Navigate Fez's winding streets with confidence. Get turn-by-turn directions and immersive experiences.",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "appPreview": "Explore Fez"
+  },
+  "footer": {
+    "description": "Your trusted companion for exploring the ancient city of Fez. Discover hidden gems, navigate with confidence, and immerse yourself in rich culture.",
+    "links": "Links",
+    "explore": "Explore",
+    "about": "About",
+    "language": "Language",
+    "copyright": "© 2025 - Go Fez. All rights reserved"
+  },
+  "ThemePage": {
+    "home": "Home",
+    "themes": "Circuits",
+    "searchPlaceholder": "Search for restaurant, coffee, shopping...",
+    "errorTitle": "Loading Error",
+    "errorMessage": "Unable to load details for this theme.",
+    "goBack": "Go Back",
+    "themeTitle": "Theme",
+    "duration": "{minutes} min",
+    "pois": "{count} POIs",
+    "difficulty": "Difficulty: {value}",
+    "viewCircuitDetails": "View Circuit Details",
+    "noPoisForCircuit": "No points of interest found for this circuit.",
+    "noCircuitsTitle": "No Circuits Found",
+    "noCircuitsMessage": "There are currently no active circuits associated with this theme."
+  },
+  "PoiDetailPage": {
+    "loading": "Loading Point of Interest...",
+    "error": "Error loading data.",
+    "notFound": "Point of Interest not found.",
+    "notAvailable": "Not available",
+    "premium": "Premium"
+  },
+
+  "CircuitDetailPage": {
+    "loading": "Loading circuit...",
+    "error": "Unable to load circuit details.",
+    "startSuccess": "Circuit started successfully!",
+    "startError": "Error starting the circuit.",
+    "aboutTitle": "About this circuit",
+    "stopsTitle": "Circuit stops",
+    "infoTitle": "Key information",
+    "km": "km",
+    "min": "min",
+    "stops": "stops",
+    "premium": "Premium Circuit",
+    "starting": "Starting...",
+    "startButton": "Start this circuit",
+    "circuitImageAlt": "Circuit cover image",
+    "customCircuit": "Custom Circuit",
+    "customCircuitInfo": "This is your custom circuit"
+  },
+
+  "Circuits": {
+    "loading": "Loading...",
+    "error": "Loading error",
+    "poiVisitedSuccess": "Point of interest marked as visited!",
+    "poiVisitedError": "Error validating point of interest.",
+    "circuitComplete": "Congratulations! You have completed this circuit!",
+    "nextStep": "Next",
+    "prevStep": "Previous",
+    "markAsVisited": "Mark as visited",
+    "completed": "Completed"
+  },
+
+  "CircuitNavigation": {
+    "step": "Step",
+    "prev": "Previous",
+    "next": "Next",
+    "markAsVisited": "Mark as visited",
+    "visited": "Visited",
+    "yourLocation": "You are here",
+    "currentPOI": "Current POI",
+    "completedPOI": "Visited POI",
+    "loading": "Loading...",
+    "error": "Loading error"
+  },
+
+  "AudioPlayer": {
+    "title": "Audio Guide",
+    "selectLanguage": "Select language",
+    "noAudio": "No audio available"
+  },
+  "ShareButtons": {
+    "title": "Share this place",
+    "emailBody": "Check out this place:",
+    "shareSuccess": "Shared successfully!",
+    "shareSuccessDesc": "Thank you for sharing this content!",
+    "linkCopied": "Link copied!",
+    "linkCopiedDesc": "The link has been copied to your clipboard.",
+    "copyError": "Error",
+    "copyErrorDesc": "Unable to copy link.",
+    "copied": "Copied!",
+    "copyLink": "Copy link"
+  },
+  "header": {
+    "circuits": "Circuits",
+    "pois": "Points of Interest",
+    "admin": "Admin",
+    "profile": "Profile",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "ReviewForm": {
+    "title": "Leave a Review",
+    "yourRating": "Your Rating",
+    "yourComment": "Your Comment",
+    "commentPlaceholder": "Share your experience...",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "ratingRequired": "Please select a rating.",
+    "successTitle": "Review submitted!"
+  },
+  "ReviewList": {
+    "title": "Reviews",
+    "loading": "Loading reviews...",
+    "error": "Error loading reviews",
+    "noReviews": "No reviews yet.",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "pending": "Pending"
+  },
+  "GamificationProfile": {
+     "points": "Points",
+     "level": "Level",
+     "badges": "Badges",
+     "leaderboard": "Leaderboard",
+     "Leaderboard": {
+      "title": "Leaderboard"
+     },
+     "totalPoints": "Total Points",
+     "nextLevel": "Next Level",
+     "earnedBadges": "Earned Badges",
+     "lockedBadges": "Locked Badges",
+     "rank": "Rank",
+     "user": "User",
+     "loading": "Loading...",
+     "error": "Loading error",
+     "myBadges": "My Badges",
+     "noBadges": "No badges earned yet",
+     "earnBadgesHint": "Complete activities to earn badges!",
+  "badgesEarned": "{count} badges earned",
+  "pointsToNextLevel": "{count} points to next level",
+  "title": "Achievements & Progress",
+  "subtitle": "Track your points, level, and badges earned."
+  },
+  "CircuitsPage": {
+    "title": "Discover Our Circuits",
+    "subtitle": "Explore Fez through thematic and personalized routes.",
+    "loading": "Loading circuits...",
+    "error": "Unable to load circuits.",
+    "noCircuits": "No circuits found at the moment.",
+    "createButton": "Create a Circuit",
+    "allCircuits": "All Circuits",
+    "officialCircuits": "Official Circuits",
+    "customCircuits": "My Custom Circuits",
+    "noOfficialCircuits": "No official circuits available at the moment.",
+    "noCustomCircuits": "No custom circuits yet. Create your first one!"
+  },
+  "CircuitCard": {
+    "km": "km",
+    "min": "min",
+    "customCircuit": "Custom Circuit"
+  },
+  "PoiFilters": {
+    "searchPlaceholder": "Search for a POI...",
+    "categoryPlaceholder": "Select a category",
+    "cityPlaceholder": "Select a city",
+    "allCategories": "All categories",
+    "allCities": "All cities",
+    "premiumOnly": "Premium only"
+  },
+  "Pois": {
+    "loading": "Loading POIs...",
+    "error": "Error loading POIs.",
+    "noPois": "No POIs found."
+  },
+  "ThemesPage": {
+     "home": "Home",
+     "themes": "Themes",
+     "searchPlaceholder": "Search for restaurant, coffee, shopping...",
+     "loading": "Loading themes...",
+     "error": "Error loading themes",
+     "title": "EXPLORE FEZ BY THEME",
+     "subtitle": "Discover the treasures of Fez organized by theme",
+     "noThemes": "No themes available"
+  },
+  "PoisPage": {
+    "loading": "Loading points of interest...",
+    "error": "Error loading points of interest",
+    "title": "Discover Points of Interest",
+    "subtitle": "Explore fascinating locations and landmarks across Fez",
+    "noPois": "No points of interest found"
+  },
+  "ReviewSection": {
+    "reviewsTitle": "Reviews",
+    "loading": "Loading reviews...",
+    "error": "Error loading reviews",
+    "noReviews": "No reviews yet",
+    "writeReview": "Write a Review"
+  }
+}

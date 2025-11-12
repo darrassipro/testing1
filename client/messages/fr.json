@@ -1,0 +1,470 @@
+{
+  "Leaderboard": {
+    "title": "Classement",
+    "subtitle": "Découvrez votre position parmi les autres utilisateurs.",
+    "loading": "Chargement du classement...",
+    "noResults": "Aucun résultat de classement trouvé.",
+    "rank": "Rang",
+    "player": "Joueur",
+    "level": "Niveau",
+    "points": "Points"
+  },
+  "common": {
+    "viewAll": "Voir tout"
+  },
+  "hello": "Bonjour",
+  "nav": {
+    "home": "ACCUEIL",
+    "routes": "ROUTES",
+    "pois": "POIs",
+    "rewards": "Récompenses",
+    "partners": "Partenaires",
+    "contact": "Contactez-nous"
+  },
+  "auth": {
+    "login": "Connexion",
+    "signup": "S'inscrire"
+  },
+  "Login": {
+    "title": "Connexion",
+    "description": "Connectez-vous à votre compte pour continuer",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": "Se connecter",
+    "loading": "Connexion...",
+    "orContinueWith": "Ou continuer avec",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "signUp": "Inscrivez-vous",
+    "success": "Connexion réussie ! Bienvenue.",
+    "invalidCredentials": "Email ou mot de passe incorrect.",
+    "fillFields": "Veuillez remplir tous les champs."
+  },
+  "SignUp": {
+    "title": "Inscription",
+    "description": "Créez votre compte pour commencer",
+    "firstName": "Prénom",
+    "firstNamePlaceholder": "Jean",
+    "lastName": "Nom",
+    "lastNamePlaceholder": "Dupont",
+    "email": "Email",
+    "phone": "Téléphone (Optionnel)",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "submit": "Créer un compte",
+    "loading": "Création...",
+    "alreadyAccount": "Vous avez déjà un compte ?",
+    "login": "Se connecter",
+    "orSignUpWith": "Ou s'inscrire avec",
+    "success": "Inscription réussie ! Veuillez vous connecter.",
+    "checkEmail": "Veuillez vérifier votre email pour le code de vérification",
+    "error": "Erreur lors de l'inscription. L'email ou le téléphone existe peut-être déjà."
+  },
+  "OTPVerification": {
+    "title": "Vérifiez votre email",
+    "description": "Nous avons envoyé un code de vérification à",
+    "expiresIn": "Le code expire dans 10 minutes",
+    "invalidOTP": "Veuillez entrer un code à 6 chiffres valide",
+    "success": "Email vérifié avec succès !",
+    "error": "Échec de la vérification. Veuillez réessayer.",
+    "otpResent": "Nouveau code envoyé à votre email",
+    "resendError": "Échec de l'envoi du code",
+    "resending": "Envoi en cours...",
+    "resendCode": "Renvoyer le code",
+    "resendIn": "Renvoyer le code dans",
+    "verifying": "Vérification...",
+    "verify": "Vérifier l'email",
+    "backToSignup": "Retour à l'inscription"
+  },
+  "ForgotPassword": {
+    "title": "Mot de passe oublié ?",
+    "description": "Entrez votre adresse email et nous vous enverrons un code de réinitialisation",
+    "email": "Email",
+    "otpSent": "Code OTP envoyé avec succès à votre email",
+    "error": "Erreur lors de l'envoi du code OTP",
+    "sending": "Envoi en cours...",
+    "sendCode": "Envoyer le code",
+    "backToLogin": "Retour à la connexion"
+  },
+  "PasswordResetOTP": {
+    "title": "Vérifiez votre code",
+    "description": "Nous avons envoyé un code de réinitialisation à",
+    "expiresIn": "Le code expire dans 10 minutes",
+    "invalidOTP": "Veuillez entrer un code à 6 chiffres valide",
+    "success": "Code OTP vérifié avec succès !",
+    "error": "Échec de la vérification",
+    "otpResent": "Nouveau code envoyé à votre email",
+    "resendError": "Échec du renvoi du code",
+    "resending": "Renvoi...",
+    "resendCode": "Renvoyer le code",
+    "resendIn": "Renvoyer le code dans",
+    "verifying": "Vérification...",
+    "verify": "Vérifier",
+    "back": "Retour"
+  },
+  "ResetPassword": {
+    "title": "Nouveau mot de passe",
+    "description": "Définissez un nouveau mot de passe sécurisé pour votre compte",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+    "invalidResponse": "Réponse invalide du serveur",
+    "success": "Mot de passe réinitialisé avec succès !",
+    "error": "Erreur lors de la réinitialisation du mot de passe",
+    "updating": "Mise à jour...",
+    "validate": "Valider",
+    "back": "Retour"
+  },
+  "hero": {
+    "discover": "Découvrez",
+    "fez": "Fès",
+    "through": "À travers des itinéraires interactifs et des guides intelligents",
+    "subtitle": "Votre guide personnel pour explorer le site du patrimoine mondial de l'UNESCO de Fès el-Bali",
+    "search": "Rechercher des destinations...",
+    "searchButton": "Rechercher"
+  },
+  "filters": {
+    "museums": "Musées",
+    "restaurants": "Restaurants",
+    "monuments": "Monuments",
+    "markets": "Marchés"
+  },
+  "featuresSection": {
+    "title": "Explorez plus intelligemment, voyagez plus profondément",
+    "subtitle": "Libérez tout le potentiel de votre aventure à Fès"
+  },
+  "features": {
+    "routes": {
+      "title": "Itinéraires interactifs",
+      "description": "Naviguez facilement grâce aux chemins guidés par GPS"
+    },
+    "audio": {
+      "title": "Audio et galerie VR",
+      "description": "Expérience multimédia immersive"
+    },
+    "rewards": {
+      "title": "Jouez et gagnez des récompenses",
+      "description": "Débloquez des succès et des prix"
+    },
+    "offline": {
+      "title": "Accès hors ligne",
+      "description": "Téléchargez des cartes pour une utilisation hors ligne"
+    }
+  },
+  "themes": {
+    "historical": "Sites historiques",
+    "cuisine": "Cuisine locale",
+    "crafts": "Artisanat traditionnel",
+    "architecture": "Architecture"
+  },
+  "circuits": {
+    "medina": "Circuit de la médina",
+    "palace": "Visite du palais royal",
+    "souks": "Souks et marchés",
+    "tanneries": "Promenade des tanneries",
+    "garden": "Chemin des jardins"
+  },
+  "card": {
+    "stops": "arrêts",
+    "viewRoutes": "Voir les itinéraires",
+    "badge": {
+      "theme": "Thème",
+      "circuit": "Circuit"
+    }
+  },
+  "exploreTheme": {
+    "title": "EXPLORE FEZ BY THEME",
+    "subtitle": "Découvrez Fès à travers des expériences thématiques organisées"
+  },
+  "exploreCircuit": {
+    "title": "EXPLORE FEZ BY CIRCUIT"
+  },
+  "discoverMap": {
+    "title": "Découvrez Fès en temps réel",
+    "searchPlaceholder": "Rechercher un restaurant, café, shopping...",
+    "yourLocation": "Votre position"
+  },
+  "download": {
+    "title": "Améliorez votre visite avec le guidage GPS et les visites à 360°",
+    "description": "Naviguez dans les rues sinueuses de Fès en toute confiance. Obtenez des directions étape par étape et des expériences immersives.",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "appPreview": "Explorez Fès"
+  },
+  "footer": {
+    "description": "Votre compagnon de confiance pour explorer l'ancienne ville de Fès. Découvrez des trésors cachés, naviguez en toute confiance et plongez dans une culture riche.",
+    "links": "Liens",
+    "explore": "Explorer",
+    "about": "À propos",
+    "language": "Langue",
+    "copyright": "© 2025 - Go Fez. Tous droits réservés"
+  },
+  "ThemePage": {
+    "home": "Accueil",
+  "themes": "Circuits",
+  "searchPlaceholder": "Rechercher un restaurant, café, shopping...",
+    "errorTitle": "Erreur de chargement",
+    "errorMessage": "Impossible de charger les détails pour ce thème.",
+    "goBack": "Retour",
+    "themeTitle": "Thème",
+    "duration": "{minutes} min",
+    "pois": "{count} POIs",
+    "difficulty": "Difficulté : {value}",
+    "viewCircuitDetails": "Voir les détails du circuit",
+    "noPoisForCircuit": "Aucun point d'intérêt trouvé pour ce circuit.",
+    "noCircuitsTitle": "Aucun circuit trouvé",
+    "noCircuitsMessage": "Il n'y a actuellement aucun circuit actif associé à ce thème."
+  },
+  "header": {
+    "circuits": "Circuits",
+    "pois": "Points d'intérêt",
+    "admin": "Admin",
+    "profile": "Profil",
+    "login": "Connexion",
+    "logout": "Déconnexion"
+  },
+  "exploreCard": {
+    "circuits": "{count, plural, =0 {Aucun circuit} one {# circuit} other {# circuits}}",
+    "pois": "{count, plural, =0 {Aucun POI} one {# POI} other {# POIs}}",
+    "km": "{distance} km",
+    "min": "{duration} min",
+    "premium": "Premium"
+  },
+
+  "appDownload": {
+    "title": "Téléchargez l'application dès maintenant!",
+    "description": "Améliorez votre expérience à Fès avec notre application mobile. Accédez à des fonctionnalités exclusives, des cartes hors ligne et des récompenses.",
+    "soon": "Bientôt disponible sur"
+  },
+  "CircuitListPage": {
+    "title": "Circuits Touristiques à Fès",
+    "description": "Découvrez les meilleurs itinéraires pour explorer Fès.",
+    "filterAll": "Tous",
+    "loading": "Chargement des circuits...",
+    "error": "Erreur lors du chargement des circuits.",
+    "noCircuits": "Aucun circuit trouvé correspondant à vos critères.",
+    "themes": "Thèmes",
+    "duration": "Durée",
+    "distance": "Distance",
+    "clearFilters": "Effacer les filtres",
+    "applyFilters": "Appliquer les filtres",
+    "min": "min",
+    "max": "max",
+    "minutes": "Minutes",
+    "kilometers": "Kilomètres"
+  },
+  "POIListPage": {
+    "title": "Points d'Intérêt à Fès",
+    "description": "Explorez les sites incontournables de Fès.",
+    "filterAll": "Tous",
+    "loading": "Chargement des points d'intérêt...",
+    "error": "Erreur lors du chargement des points d'intérêt.",
+    "noPOIs": "Aucun point d'intérêt trouvé.",
+    "categories": "Catégories",
+    "rating": "Note",
+    "clearFilters": "Effacer les filtres",
+    "applyFilters": "Appliquer les filtres",
+    "stars": "{count} étoiles et plus"
+  },
+  "PoiDetailPage": {
+    "loading": "Chargement du point d'intérêt...",
+    "error": "Impossible de charger les détails.",
+    "notAvailable": "Non disponible",
+    "premium": "Contenu Premium",
+    "audioGuide": "Guide Audio",
+    "notFound": "Point d'intérêt non trouvé."
+  },
+  "POICard": {
+    "premium": "Premium"
+  },
+  "ReviewSection": {
+    "reviewsTitle": "Avis",
+    "rating": "{rating}/5",
+    "outOf": "sur {count, plural, one {# avis} other {# avis}}",
+    "leaveReview": "Laisser un avis",
+    "yourRating": "Votre note",
+    "yourComment": "Votre commentaire",
+    "submitReview": "Soumettre l'avis",
+    "loginToReview": "Connectez-vous pour laisser un avis.",
+    "reviewSubmitted": "Avis soumis avec succès !",
+    "reviewError": "Erreur lors de la soumission de l'avis."
+  },
+
+  "GamificationProfile": {
+    "points": "Points",
+    "level": "Niveau",
+    "badges": "Badges",
+    "leaderboard": "Classement",
+    "totalPoints": "Total de Points",
+    "nextLevel": "Niveau Suivant",
+    "earnedBadges": "Badges Obtenus",
+    "lockedBadges": "Badges Verrouillés",
+    "rank": "Rang",
+    "user": "Utilisateur",
+    "loading": "Chargement...",
+    "error": "Erreur de chargement",
+    "myBadges": "Mes Badges",
+    "noBadges": "Aucun badge obtenu pour le moment",
+    "earnBadgesHint": "Complétez des activités pour gagner des badges !",
+    "badgesEarned": "{count} badges obtenus",
+    "pointsToNextLevel": "{count} points pour atteindre le niveau suivant",
+    "Leaderboard": {
+      "title": "Classement"
+    }
+  },
+
+  "CircuitDetailPage": {
+    "loading": "Chargement du circuit...",
+    "error": "Impossible de charger les détails du circuit.",
+    "startSuccess": "Circuit démarré avec succès !",
+    "startError": "Erreur lors du démarrage du circuit.",
+    "aboutTitle": "À propos de ce circuit",
+    "stopsTitle": "Les étapes du circuit",
+    "infoTitle": "Informations clés",
+    "km": "km",
+    "min": "min",
+    "stops": "arrêts",
+    "premium": "Circuit Premium",
+    "starting": "Démarrage...",
+    "startButton": "Démarrer ce circuit",
+    "circuitImageAlt": "Image de couverture du circuit",
+    "customCircuit": "Circuit personnalisé",
+    "customCircuitInfo": "Ceci est votre circuit personnalisé"
+  },
+
+  "Circuits": {
+    "loading": "Chargement...",
+    "error": "Erreur de chargement",
+    "poiVisitedSuccess": "Point d'intérêt marqué comme visité !",
+    "poiVisitedError": "Erreur lors de la validation du point d'intérêt.",
+    "circuitComplete": "Félicitations ! Vous avez terminé ce circuit !",
+    "nextStep": "Suivant",
+    "prevStep": "Précédent",
+    "markAsVisited": "Marquer comme visité",
+    "completed": "Terminé"
+  },
+
+  "CircuitNavigation": {
+    "step": "Étape",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "markAsVisited": "Marquer comme visité",
+    "visited": "Visité",
+    "yourLocation": "Vous êtes ici",
+    "currentPOI": "POI actuel",
+    "completedPOI": "POI visité",
+    "loading": "Chargement...",
+    "error": "Erreur de chargement"
+  },
+
+  "AudioPlayer": {
+    "title": "Guide Audio",
+    "selectLanguage": "Choisir la langue",
+    "noAudio": "Aucun audio disponible"
+  },
+  "ShareButtons": {
+    "title": "Partager ce lieu",
+    "emailBody": "Découvrez ce lieu :",
+    "shareSuccess": "Partagé avec succès!",
+    "shareSuccessDesc": "Merci de partager ce contenu!",
+    "linkCopied": "Lien copié!",
+    "linkCopiedDesc": "Le lien a été copié dans le presse-papiers.",
+    "copyError": "Erreur",
+    "copyErrorDesc": "Impossible de copier le lien.",
+    "copied": "Copié!",
+    "copyLink": "Copier le lien"
+  },
+  "ReviewForm": {
+    "title": "Laissez un avis",
+    "yourRating": "Votre note",
+    "yourComment": "Votre commentaire",
+    "commentPlaceholder": "Partagez votre expérience...",
+    "submit": "Envoyer",
+    "submitting": "Envoi...",
+    "ratingRequired": "Veuillez sélectionner une note.",
+    "successTitle": "Avis envoyé !",
+    "errorSubmit": "Erreur lors de la soumission de l'avis"
+  },
+  "ReviewList": {
+    "title": "Avis",
+    "loading": "Chargement des avis...",
+    "error": "Erreur lors du chargement des avis",
+    "noReviews": "Aucun avis pour le moment.",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "pending": "En attente"
+  },
+  "CircuitsPage": {
+    "title": "Découvrez nos Circuits",
+    "subtitle": "Explorez Fès à travers des parcours thématiques et personnalisés.",
+    "loading": "Chargement des circuits...",
+    "error": "Impossible de charger les circuits.",
+    "noCircuits": "Aucun circuit trouvé pour le moment.",
+    "createButton": "Créer un circuit",
+    "allCircuits": "Tous les circuits",
+    "officialCircuits": "Circuits officiels",
+    "customCircuits": "Mes circuits personnalisés",
+    "noOfficialCircuits": "Aucun circuit officiel disponible pour le moment.",
+    "noCustomCircuits": "Aucun circuit personnalisé. Créez-en un maintenant !"
+  },
+  "CircuitCard": {
+    "km": "km",
+    "min": "min",
+    "customCircuit": "Circuit personnalisé"
+  },
+  "CustomCircuitCreate": {
+    "title": "Créer un circuit personnalisé",
+    "step1Title": "Étape 1: Décrivez votre circuit",
+    "circuitName": "Nom du circuit",
+    "circuitNamePlaceholder": "Ex: Ma balade gourmande à Fès",
+    "circuitDescription": "Description (optionnel)",
+    "circuitDescriptionPlaceholder": "Décrivez ce qui rend ce circuit spécial...",
+    "step2Title": "Étape 2: Ajoutez et organisez vos étapes",
+    "availablePois": "POIs disponibles",
+    "selectedPois": "POIs sélectionnés",
+    "searchPois": "Rechercher un POI...",
+    "noPoisFound": "Aucun POI trouvé.",
+    "dragPoisHere": "Glissez-déposez les POIs ici depuis la gauche.",
+    "reorderHint": "Glissez-déposez pour réorganiser les étapes.",
+    "cancel": "Annuler",
+    "createButton": "Créer le circuit",
+    "creating": "Création...",
+    "createSuccess": "Circuit personnalisé créé avec succès !",
+    "createError": "Échec de la création du circuit.",
+    "errorNameRequired": "Le nom du circuit est obligatoire.",
+    "errorMinPois": "Vous devez sélectionner au moins 2 POIs."
+  },
+
+  "ThemesPage": {
+     "home": "Accueil",
+     "themes": "Thèmes",
+     "searchPlaceholder": "Rechercher un restaurant, café, shopping...",
+     "title": "Explorer Fès par thème",
+     "subtitle": "Découvrez les trésors de Fès organisés par thèmes",
+     "loading": "Chargement des thèmes...",
+     "error": "Erreur lors du chargement des thèmes.",
+    "noThemes": "Aucun thème disponible.",
+    "noResults": "Aucun thème trouvé correspondant à votre recherche."
+  },
+
+  "PoisPage": {
+    "title": "Points d'Intérêt",
+    "subtitle": "Découvrez les trésors de Fès",
+    "loading": "Chargement des POIs...",
+    "error": "Erreur lors du chargement des POIs.",
+    "noPois": "Aucun POI trouvé."
+  },
+
+  "PoiFilters": {
+    "searchPlaceholder": "Rechercher un POI...",
+    "categoryPlaceholder": "Sélectionner une catégorie",
+    "cityPlaceholder": "Sélectionner une ville",
+    "allCategories": "Toutes les catégories",
+    "allCities": "Toutes les villes",
+    "premiumOnly": "Premium seulement"
+  }
+
+}
