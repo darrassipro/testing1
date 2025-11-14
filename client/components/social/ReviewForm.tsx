@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 interface ReviewFormProps {
   poiId: string;
-  onSubmitSuccess?: () => void; // Callback to refetch reviews (now optional)
+  onSubmitSuccess?: () => void;
 }
 
 const ReviewForm = ({ poiId, onSubmitSuccess }: ReviewFormProps) => {
@@ -25,16 +25,47 @@ const ReviewForm = ({ poiId, onSubmitSuccess }: ReviewFormProps) => {
     }
     
     try {
-      const result = await createReview({
+      const result: any = await createReview({
         poiId,
         rating,
         comment: comment.trim() || undefined,
       }).unwrap();
       
-      toast.success(t("successTitle"));
+      const reviewData = result.data;
+
+      if (reviewData) {
+        if (reviewData.isAccepted) {
+          // Approved
+          toast.success(t("successTitle")); 
+        } else {
+          const report = reviewData.aiReport || "";
+
+          // FIX: Consistent logic. 
+          // If not accepted and has report (that is NOT 'UNCERTAIN'), it's rejected.
+          const isRejected = report && !report.startsWith("UNCERTAIN");
+
+          if (isRejected) {
+            // Extract and clean the reason
+            let reason = report;
+            if (reason.startsWith("REJECT:")) {
+                reason = reason.replace(/^REJECT:\s*/, "").trim();
+            }
+            if (!reason) reason = "Contenu inapproprié";
+
+            toast.error(`Avis refusé : ${reason}`);
+          } else {
+            // UNCERTAIN or NULL -> Pending
+            toast.warning("Votre avis est en cours de vérification par la modération.");
+          }
+        }
+      } else {
+        toast.success(t("successTitle"));
+      }
+
       setRating(0);
       setComment("");
-      onSubmitSuccess?.(); // Trigger refetch (optional)
+      onSubmitSuccess?.(); 
+
     } catch (error: any) {
       console.error("Error submitting review:", error);
       const errorMessage = error?.data?.message || error?.message || t("errorSubmit") || "Erreur lors de la soumission de l'avis";

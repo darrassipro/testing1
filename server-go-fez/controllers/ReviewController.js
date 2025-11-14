@@ -4,6 +4,7 @@ const { Review, POI, User, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const { uploadFromBuffer, deleteFile } = require('../Config/cloudinary');
 const { awardReview, awardPoints } = require('../services/GamificationService');
+const ContentModerationService = require('../services/ContentModerationService'); 
 const xss = require('xss');
 
 /**
@@ -58,85 +59,85 @@ exports.createReview = async (req, res) => {
 	const t = await sequelize.transaction();
 	try {
 		const { poiId, rating, comment } = req.body;
-		const userId = req.user.userId; // Supposé provenir du middleware d'authentification
+		const userId = req.user.userId;
 
 		if (!poiId || !rating) {
-			return res.status(400).json({
-				success: false,
-				message: 'poiId et rating sont requis.',
-			});
+            await t.rollback();
+			return res.status(400).json({ success: false, message: 'poiId et rating requis.' });
 		}
 
-		// Vérifier si l'utilisateur a déjà évalué ce POI
-		const existingReview = await Review.findOne({
-			where: { userId, poiId, isDeleted: false },
-		});
-
+		const existingReview = await Review.findOne({ where: { userId, poiId, isDeleted: false } });
 		if (existingReview) {
-			return res.status(409).json({
-				success: false,
-				message: 'Vous avez déjà laissé un avis pour ce POI.',
-			});
+            await t.rollback();
+			return res.status(409).json({ success: false, message: 'Avis déjà existant pour ce POI.' });
 		}
 
-		// Gérer l'upload des photos
+        // --- AI MODERATION ---
+        let isAccepted = false;
+        let aiReport = null;
+
+        if (comment && comment.trim().length > 0) {
+            const moderation = await ContentModerationService.moderateContent(comment);
+            if (moderation.action === 'APPROVE') {
+                isAccepted = true;
+                aiReport = 'Auto-approved by AI';
+            } else {
+                // REJECT or UNCERTAIN -> Pending/Rejected
+                isAccepted = false;
+                aiReport = `${moderation.action}: ${moderation.reason}`;
+            }
+        } else {
+            // No comment = Auto-approve
+            isAccepted = true;
+            aiReport = 'Auto-approved (Rating only)';
+        }
+
+		// Handle Photos
 		let photoUrls = [];
 		if (req.files && req.files.length > 0) {
 			for (const file of req.files) {
 				try {
-					const result = await uploadFromBuffer(
-						file.buffer,
-						'go-fez/reviews'
-					);
+					const result = await uploadFromBuffer(file.buffer, 'go-fez/reviews');
 					photoUrls.push(result.secure_url);
-				} catch (uploadError) {
-					console.warn('Échec de l-upload d-une image:', uploadError.message);
-				}
+				} catch (e) { console.warn('Upload failed:', e.message); }
 			}
 		}
 
-		// Créer l'avis
-		const newReview = await Review.create(
-			{
-				userId,
-				poiId,
-				rating: parseFloat(rating),
+		const newReview = await Review.create({
+				userId, poiId, rating: parseFloat(rating),
 				comment: comment ? xss(comment) : null,
 				photos: photoUrls.length > 0 ? JSON.stringify(photoUrls) : null,
-			},
-			{ transaction: t }
-		);
+                isAccepted, // Set status based on AI
+                aiReport
+			}, { transaction: t });
 
-		// Mettre à jour la note moyenne du POI
-		await updatePOIRating(poiId, t);
+		if (isAccepted) {
+			await updatePOIRating(poiId, t);
+		}
 
-		// Valider la transaction
 		await t.commit();
 
-		// Award gamification points for review
-		const isDetailed = comment && comment.length >= 100;
-		awardReview(userId, newReview.id, isDetailed)
-			.catch(err => console.error('Error awarding review points:', err));
-		
-		// Award extra points if photos were uploaded
-		if (photoUrls.length > 0) {
-			awardPoints(userId, 'PHOTOGRAPHY_LOVER')
-				.catch(err => console.error('Error awarding photography points:', err));
-		}
+        // --- GAMIFICATION: ONLY IF ACCEPTED ---
+        if (isAccepted) {
+            const isDetailed = comment && comment.length >= 100;
+            awardReview(userId, newReview.id, isDetailed)
+                .catch(err => console.error('Error awarding review points:', err));
+            
+            if (photoUrls.length > 0) {
+                awardPoints(userId, 'PHOTOGRAPHY_LOVER')
+                    .catch(err => console.error('Error awarding photography points:', err));
+            }
+        }
 
 		res.status(201).json({
 			success: true,
-			message: 'Avis créé avec succès.',
+			message: isAccepted ? 'Avis publié.' : 'Avis en attente de modération.',
 			data: newReview,
 		});
 	} catch (error) {
-		// Annuler la transaction en cas d'erreur
 		await t.rollback();
-		console.error('Erreur lors de la création de l-avis:', error);
-		res.status(500).json({
-			success: false,
-			message: 'Erreur interne du serveur.',
-		});
+		console.error('Erreur création avis:', error);
+		res.status(500).json({ success: false, message: 'Erreur serveur.' });
 	}
 };
 
@@ -247,15 +248,22 @@ exports.getPendingReviews = async (req, res) => {
 			isDeleted: false,
 		};
 
-		// Filter by status
 		if (status === 'pending') {
 			whereClause.isAccepted = false;
-			whereClause.aiReport = null; // Not denied
+            // ✅ FIX: Pending includes NO report OR 'UNCERTAIN' reports (System errors)
+			whereClause[Op.or] = [
+                { aiReport: null },
+                { aiReport: { [Op.like]: 'UNCERTAIN:%' } } // Matches our new clean error message
+            ];
 		} else if (status === 'accepted') {
 			whereClause.isAccepted = true;
 		} else if (status === 'denied') {
 			whereClause.isAccepted = false;
-			whereClause.aiReport = { [Op.ne]: null }; // Has denial reason
+            // ✅ FIX: Denied is ONLY explicit rejections, NOT uncertainties
+			whereClause.aiReport = { 
+                [Op.ne]: null,
+                [Op.notLike]: 'UNCERTAIN:%' 
+            }; 
 		}
 
 		const { count, rows } = await Review.findAndCountAll({
@@ -270,22 +278,10 @@ exports.getPendingReviews = async (req, res) => {
 					model: POI,
 					as: 'poi',
 					attributes: ['id', 'fr', 'en', 'ar'],
-					include: [
-						{
-							model: require('../models').POILocalization,
-							as: 'frLocalization',
-							attributes: ['name', 'description']
-						},
-						{
-							model: require('../models').POILocalization,
-							as: 'enLocalization',
-							attributes: ['name', 'description']
-						},
-						{
-							model: require('../models').POILocalization,
-							as: 'arLocalization',
-							attributes: ['name', 'description']
-						}
+                    include: [
+						{ model: require('../models').POILocalization, as: 'frLocalization', attributes: ['name'] },
+						{ model: require('../models').POILocalization, as: 'enLocalization', attributes: ['name'] },
+						{ model: require('../models').POILocalization, as: 'arLocalization', attributes: ['name'] }
 					]
 				},
 			],
@@ -320,53 +316,56 @@ exports.approveReview = async (req, res) => {
 	const t = await sequelize.transaction();
 	try {
 		const { reviewId } = req.params;
-
 		const review = await Review.findByPk(reviewId);
 
 		if (!review) {
 			await t.rollback();
-			return res.status(404).json({
-				success: false,
-				message: 'Avis non trouvé.',
-			});
+			return res.status(404).json({ success: false, message: 'Avis non trouvé.' });
 		}
 
 		if (review.isAccepted) {
 			await t.rollback();
-			return res.status(400).json({
-				success: false,
-				message: 'Cet avis est déjà approuvé.',
-			});
+			return res.status(400).json({ success: false, message: 'Déjà approuvé.' });
 		}
 
-		// Approve the review
-		await review.update(
-			{
-				isAccepted: true,
-				aiReport: null, // Clear any previous denial reason
-			},
-			{ transaction: t }
-		);
+		await review.update({ isAccepted: true, aiReport: null }, { transaction: t });
 
-		// Update POI rating to include this review
 		if (review.poiId) {
 			await updatePOIRating(review.poiId, t);
 		}
 
 		await t.commit();
 
+        // --- GAMIFICATION: AWARD POINTS NOW ---
+        // We must check if points were already given? 
+        // Since we only give points on creation IF isAccepted=true, 
+        // and this review was isAccepted=false, users haven't received points yet.
+        
+        const isDetailed = review.comment && review.comment.length >= 100;
+        awardReview(review.userId, review.id, isDetailed)
+            .catch(err => console.error('Error awarding review points (admin approve):', err));
+
+        // Check for photos to award photography points
+        let hasPhotos = false;
+        try {
+            const photos = review.photos ? JSON.parse(review.photos) : [];
+            hasPhotos = photos.length > 0;
+        } catch (e) {}
+
+        if (hasPhotos) {
+            awardPoints(review.userId, 'PHOTOGRAPHY_LOVER')
+                .catch(err => console.error('Error awarding photo points (admin approve):', err));
+        }
+
 		res.status(200).json({
 			success: true,
-			message: 'Avis approuvé avec succès.',
+			message: 'Avis approuvé et points attribués.',
 			data: review,
 		});
 	} catch (error) {
 		await t.rollback();
 		console.error('Error approving review:', error);
-		res.status(500).json({
-			success: false,
-			message: 'Erreur interne du serveur.',
-		});
+		res.status(500).json({ success: false, message: 'Erreur serveur.' });
 	}
 };
 

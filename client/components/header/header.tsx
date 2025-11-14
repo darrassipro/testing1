@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Menu, X, LogOut } from "lucide-react";
+import { Menu, X, LogOut, User, LayoutDashboard } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/store";
@@ -15,6 +15,20 @@ import PasswordResetOTP from "../auth/PasswordResetOTP";
 import ResetPassword from "../auth/ResetPassword";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/components/ui/avatar";
 
 interface HeaderProps {
   locale: string;
@@ -51,28 +65,22 @@ export default function Header({
   const isAuthenticated = isMounted && !!user;
 
   // Detect if we're on the homepage
-  // Homepage paths: /, /en, /fr, /ar
   const isHomePage = pathname === '/' || pathname === '/en' || pathname === '/fr' || pathname === '/ar';
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-
   // Listens for a global event to open the login modal
   useEffect(() => {
     const handleOpenLogin = () => {
       setIsLoginOpen(true);
     };
-
-    // Listen for the custom event
     document.addEventListener("triggerLoginModal", handleOpenLogin);
-
-    // Clean up the listener
     return () => {
       document.removeEventListener("triggerLoginModal", handleOpenLogin);
     };
-  }, []); // Runs once on mount
+  }, []);
 
   const handleLogout = () => {
     dispatch(logOut());
@@ -86,10 +94,57 @@ export default function Header({
       setShowTopBanner(window.scrollY <= 50);
       setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Reusable Profile Dropdown Component
+  const ProfileDropdown = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 overflow-hidden h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 transition-all hover:shadow-md">
+          <Avatar className="h-full w-full">
+            <AvatarImage 
+              src={user?.profileImage} 
+              alt={user?.firstName || "User"} 
+              className="object-cover"
+            />
+            <AvatarFallback className="bg-emerald-600 text-white font-bold flex items-center justify-center text-xs md:text-sm">
+              {user?.firstName ? user.firstName.charAt(0).toUpperCase() : 'U'}
+            </AvatarFallback>
+          </Avatar>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56 bg-white z-[100]">
+        <DropdownMenuLabel>
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none text-gray-900">{user?.firstName} {user?.lastName}</p>
+            <p className="text-xs leading-none text-muted-foreground text-gray-500 truncate">{user?.email}</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/profile" className="cursor-pointer w-full flex items-center">
+            <User className="mr-2 h-4 w-4" />
+            <span>{t("header.profile") || "Profile"}</span>
+          </Link>
+        </DropdownMenuItem>
+        {user?.role === 'admin' && (
+          <DropdownMenuItem asChild>
+            <Link href="/admin" className="cursor-pointer w-full flex items-center">
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              <span>{t("header.admin") || "Admin"}</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer">
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>{t("header.logout")}</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 
   return (
     <>
@@ -117,28 +172,13 @@ export default function Header({
                   </a>
                 </p>
                 <div className="hidden lg:flex items-center gap-2 sm:gap-3">
-                  <a
-                    href="https://facebook.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white rounded-full w-[28px] h-[28px] sm:w-[30px] sm:h-[30px] flex items-center justify-center hover:scale-105 transition-transform"
-                  >
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-white rounded-full w-[28px] h-[28px] sm:w-[30px] sm:h-[30px] flex items-center justify-center hover:scale-105 transition-transform">
                     <i className={`fab fa-facebook-f ${isHomePage ? 'text-[#02355E]' : 'text-[#02355E]'}`} style={{ fontSize: '13px' }}></i>
                   </a>
-                  <a
-                    href="https://telegram.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white rounded-full w-[28px] h-[28px] sm:w-[30px] sm:h-[30px] flex items-center justify-center hover:scale-105 transition-transform"
-                  >
+                  <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" className="bg-white rounded-full w-[28px] h-[28px] sm:w-[30px] sm:h-[30px] flex items-center justify-center hover:scale-105 transition-transform">
                     <i className={`fab fa-telegram-plane ${isHomePage ? 'text-[#02355E]' : 'text-[#02355E]'}`} style={{ fontSize: '13px' }}></i>
                   </a>
-                  <a
-                    href="https://instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white rounded-full w-[28px] h-[28px] sm:w-[30px] sm:h-[30px] flex items-center justify-center hover:scale-105 transition-transform"
-                  >
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-white rounded-full w-[28px] h-[28px] sm:w-[30px] sm:h-[30px] flex items-center justify-center hover:scale-105 transition-transform">
                     <i className={`fab fa-instagram ${isHomePage ? 'text-[#02355E]' : 'text-[#02355E]'}`} style={{ fontSize: '13px' }}></i>
                   </a>
                 </div>
@@ -162,6 +202,7 @@ export default function Header({
         >
           <div className="max-w-[1440px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative">
             <div className="flex justify-between items-center h-[56px] sm:h-[60px] md:h-[70px]">
+              
               {/* Mobile layout only (up to md) */}
               <div className="flex md:hidden justify-between items-center w-full">
                 <button
@@ -183,12 +224,9 @@ export default function Header({
                   </div>
                 </div>
                 {isAuthenticated ? (
-                  <button
-                    onClick={handleLogout}
-                    className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-red-600 text-white rounded-full hover:bg-red-700 transition font-semibold flex items-center gap-1"
-                  >
-                    <LogOut size={16} />
-                  </button>
+                  <div className="flex items-center">
+                    <ProfileDropdown />
+                  </div>
                 ) : (
                   <button
                     onClick={() => setIsSignUpOpen(true)}
@@ -201,47 +239,18 @@ export default function Header({
 
               {/* Medium & large screens */}
               <div className="hidden md:flex items-center justify-between w-full relative px-2 lg:px-6">
-                {/* Navigation Links */}
                 <div className="flex items-center gap-3 md:gap-4 lg:gap-[33px]">
-                  <a
-                    href="#"
-                    className={`${isHomePage ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
-                  >
-                    {t("nav.home")}
-                  </a>
-                  <a
-                    href="#"
-                    className={`${isHomePage ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
-                  >
-                    {t("nav.routes")}
-                  </a>
-                  <a
-                    href="#"
-                    className={`${isHomePage ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
-                  >
-                    {t("nav.pois")}
-                  </a>
-                  <a
-                    href="#"
-                    className={`${isHomePage ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
-                  >
-                    {t("nav.rewards")}
-                  </a>
-                  <a
-                    href="#"
-                    className={`${isHomePage ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
-                  >
-                    {t("nav.partners")}
-                  </a>
-                  <a
-                    href="#"
-                    className={`${isHomePage ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
-                  >
-                    {t("nav.contact")}
-                  </a>
+                  {['home', 'routes', 'pois', 'rewards', 'partners', 'contact'].map((key) => (
+                    <a
+                      key={key}
+                      href={key === 'home' ? '/' : `/${key}`}
+                      className={`${isHomePage ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
+                    >
+                      {t(`nav.${key}`)}
+                    </a>
+                  ))}
                 </div>
 
-                {/* Centered Logo */}
                 <div className="absolute left-1/2 transform -translate-x-1/2">
                   <div onClick={() => router.push(`/${locale}`)} role="button" tabIndex={0} className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center cursor-pointer">
                     <Image
@@ -255,20 +264,16 @@ export default function Header({
                   </div>
                 </div>
 
-                {/* Right Section */}
                 <div className="flex items-center gap-2 md:gap-3 lg:gap-[17px]">
                   <LanguageSelector
                     locale={locale}
                     onLanguageChange={onLanguageChange}
                   />
                   {isAuthenticated ? (
-                    <button
-                      onClick={handleLogout}
-                      className="px-3 md:px-3.5 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition font-medium flex items-center gap-1 lg:gap-2 whitespace-nowrap"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span className="hidden lg:inline">{t("header.logout")}</span>
-                    </button>
+                    <div className="flex items-center ml-2">
+                        {/* Display Profile Dropdown on Desktop */}
+                        <ProfileDropdown />
+                    </div>
                   ) : (
                     <>
                       <button
@@ -316,42 +321,15 @@ export default function Header({
                 </div>
               </div>
               <div className="flex-1 px-4 sm:px-6 py-4 sm:py-6 space-y-1">
-                <a
-                  href="#"
-                  className="block text-white font-medium py-2.5 sm:py-3 text-sm sm:text-base hover:text-emerald-400 transition"
-                >
-                  {t("nav.home")}
-                </a>
-                <a
-                  href="#"
-                  className="block text-white font-medium py-2.5 sm:py-3 text-sm sm:text-base hover:text-emerald-400 transition"
-                >
-                  {t("nav.routes")}
-                </a>
-                <a
-                  href="#"
-                  className="block text-white font-medium py-2.5 sm:py-3 text-sm sm:text-base hover:text-emerald-400 transition"
-                >
-                  {t("nav.pois")}
-                </a>
-                <a
-                  href="#"
-                  className="block text-white font-medium py-2.5 sm:py-3 text-sm sm:text-base hover:text-emerald-400 transition"
-                >
-                  {t("nav.rewards")}
-                </a>
-                <a
-                  href="#"
-                  className="block text-white font-medium py-2.5 sm:py-3 text-sm sm:text-base hover:text-emerald-400 transition"
-                >
-                  {t("nav.partners")}
-                </a>
-                <a
-                  href="#"
-                  className="block text-white font-medium py-2.5 sm:py-3 text-sm sm:text-base hover:text-emerald-400 transition"
-                >
-                  {t("nav.contact")}
-                </a>
+                {['home', 'routes', 'pois', 'rewards', 'partners', 'contact'].map((key) => (
+                    <a
+                        key={key}
+                        href={key === 'home' ? '/' : `/${key}`}
+                        className="block text-white font-medium py-2.5 sm:py-3 text-sm sm:text-base hover:text-emerald-400 transition"
+                    >
+                        {t(`nav.${key}`)}
+                    </a>
+                ))}
               </div>
               <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 border-t border-white/10">
                 {isAuthenticated ? (
@@ -385,30 +363,9 @@ export default function Header({
                   </>
                 )}
                 <div className="flex items-center justify-center gap-2 sm:gap-3 pt-2">
-                  <a
-                    href="https://facebook.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white rounded-full w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:scale-105 transition"
-                  >
-                    <i className="fab fa-facebook-f text-[#02355E]" style={{ fontSize: '14px' }}></i>
-                  </a>
-                  <a
-                    href="https://telegram.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white rounded-full w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:scale-105 transition"
-                  >
-                    <i className="fab fa-telegram-plane text-[#02355E]" style={{ fontSize: '14px' }}></i>
-                  </a>
-                  <a
-                    href="https://instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white rounded-full w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:scale-105 transition"
-                  >
-                    <i className="fab fa-instagram text-[#02355E]" style={{ fontSize: '14px' }}></i>
-                  </a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-white rounded-full w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:scale-105 transition"><i className="fab fa-facebook-f text-[#02355E]" style={{ fontSize: '14px' }}></i></a>
+                  <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" className="bg-white rounded-full w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:scale-105 transition"><i className="fab fa-telegram-plane text-[#02355E]" style={{ fontSize: '14px' }}></i></a>
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-white rounded-full w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center hover:scale-105 transition"><i className="fab fa-instagram text-[#02355E]" style={{ fontSize: '14px' }}></i></a>
                   <div className="ml-1">
                     <LanguageSelector
                       dropUp={true}
@@ -428,86 +385,42 @@ export default function Header({
         <Login
           onClose={() => {
             setIsLoginOpen(false);
-            document.dispatchEvent(new CustomEvent("authModalClosed"));
+            document.dispatchEvent(new CustomEvent("authModalClosed")); 
           }}
-          onSwitchToSignUp={() => {
-            setIsLoginOpen(false);
-            setIsSignUpOpen(true);
-          }}
-          onSwitchToForgotPassword={() => {
-            setIsLoginOpen(false);
-            setIsForgotPasswordOpen(true);
-          }}
+          onSwitchToSignUp={() => { setIsLoginOpen(false); setIsSignUpOpen(true); }}
+          onSwitchToForgotPassword={() => { setIsLoginOpen(false); setIsForgotPasswordOpen(true); }}
         />
       )}
       {isSignUpOpen && (
         <SignUp
           onClose={() => {
             setIsSignUpOpen(false);
-            document.dispatchEvent(new CustomEvent("authModalClosed"));
-          }}
-          onSwitchToLogin={() => {
-            setIsSignUpOpen(false);
-            setIsLoginOpen(true);
-          }}
-        />
-      )}
-      
-      {/* Forgot Password Flow - Step 1: Email Input */}
-      {isForgotPasswordOpen && (
-        <ForgotPassword
-          onClose={() => {
-            setIsForgotPasswordOpen(false);
-            setResetEmail('');
             document.dispatchEvent(new CustomEvent("authModalClosed")); 
           }}
-          onBack={() => {
-            setIsForgotPasswordOpen(false);
-            setIsLoginOpen(true);
-          }}
-          onEmailSent={(email) => {
-            setResetEmail(email);
-            setIsForgotPasswordOpen(false);
-            setIsPasswordResetOTPOpen(true);
-          }}
+          onSwitchToLogin={() => { setIsSignUpOpen(false); setIsLoginOpen(true); }}
         />
       )}
-      
-      {/* Forgot Password Flow - Step 2: OTP Verification */}
+      {isForgotPasswordOpen && (
+        <ForgotPassword
+          onClose={() => setIsForgotPasswordOpen(false)}
+          onBack={() => { setIsForgotPasswordOpen(false); setIsLoginOpen(true); }}
+          onEmailSent={(email) => { setResetEmail(email); setIsForgotPasswordOpen(false); setIsPasswordResetOTPOpen(true); }}
+        />
+      )}
       {isPasswordResetOTPOpen && (
         <PasswordResetOTP
           email={resetEmail}
-          onClose={() => {
-            setIsPasswordResetOTPOpen(false);
-            setResetEmail('');
-            setResetOTPCode('');
-          }}
-          onBack={() => {
-            setIsPasswordResetOTPOpen(false);
-            setIsForgotPasswordOpen(true);
-          }}
-          onSuccess={(otpCode) => {
-            setResetOTPCode(otpCode);
-            setIsPasswordResetOTPOpen(false);
-            setIsResetPasswordOpen(true);
-          }}
+          onClose={() => setIsPasswordResetOTPOpen(false)}
+          onBack={() => { setIsPasswordResetOTPOpen(false); setIsForgotPasswordOpen(true); }}
+          onSuccess={(code) => { setResetOTPCode(code); setIsPasswordResetOTPOpen(false); setIsResetPasswordOpen(true); }}
         />
       )}
-      
-      {/* Forgot Password Flow - Step 3: New Password */}
       {isResetPasswordOpen && (
         <ResetPassword
           email={resetEmail}
           otpCode={resetOTPCode}
-          onClose={() => {
-            setIsResetPasswordOpen(false);
-            setResetEmail('');
-            setResetOTPCode('');
-          }}
-          onBack={() => {
-            setIsResetPasswordOpen(false);
-            setIsPasswordResetOTPOpen(true);
-          }}
+          onClose={() => setIsResetPasswordOpen(false)}
+          onBack={() => { setIsResetPasswordOpen(false); setIsPasswordResetOTPOpen(true); }}
         />
       )}
     </>

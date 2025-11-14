@@ -8,7 +8,6 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useGetAllCategoriesQuery } from '@/services/api/CategoryApi';
 import { useGetAllCitiesQuery } from '@/services/api/CityApi';
 
-// Supposant que vous utilisez shadcn/ui
 import { Input } from '@/components/ui/input';
 import {
 	Select,
@@ -21,7 +20,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
 interface POIFiltersProps {
-	locale: string; // Pour afficher la bonne langue
+	locale: string;
 	onFilterChange: (filters: GetPOIsParams) => void;
 }
 
@@ -31,20 +30,16 @@ const POIFilters: React.FC<POIFiltersProps> = ({
 }) => {
 	const t = useTranslations('PoiFilters');
 
-	// États locaux pour les filtres
 	const [search, setSearch] = useState('');
 	const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
 	const [cityId, setCityId] = useState<string | undefined>(undefined);
 	const [isPremium, setIsPremium] = useState(false);
 
-	// Valeur débriéfée pour la recherche
 	const debouncedSearch = useDebounce(search, 300);
 
-	// Récupérer les catégories et les villes pour les dropdowns
 	const { data: categoriesData } = useGetAllCategoriesQuery();
 	const { data: citiesData } = useGetAllCitiesQuery();
 
-	// Quand un filtre change, appeler la fonction parente
 	useEffect(() => {
 		onFilterChange({
 			search: debouncedSearch || undefined,
@@ -55,9 +50,33 @@ const POIFilters: React.FC<POIFiltersProps> = ({
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [debouncedSearch, categoryId, cityId, isPremium]);
 
+    // ✅ Helper to safely extract category name
+    const getCategoryName = (category: any) => {
+        if (!category) return '—';
+
+        // Try to access the localized object (fr, en, ar)
+        // It might be directly accessible or inside category[locale]
+        let locData = category[locale] || category.fr || category.en || category.ar;
+
+        // If it's a string (JSON), parse it
+        if (typeof locData === 'string') {
+            try {
+                locData = JSON.parse(locData);
+            } catch (e) {
+                return '—';
+            }
+        }
+
+        // Return name if object exists
+        if (locData && typeof locData === 'object' && 'name' in locData) {
+            return locData.name;
+        }
+
+        return '—';
+    };
+
 	return (
 		<div className="grid grid-cols-1 gap-4 rounded-lg border bg-white p-4 shadow-sm md:grid-cols-4">
-			{/* 1. Barre de recherche */}
 			<div className="md:col-span-2">
 				<Input
 					placeholder={t('searchPlaceholder')}
@@ -66,7 +85,6 @@ const POIFilters: React.FC<POIFiltersProps> = ({
 				/>
 			</div>
 
-			{/* 2. Filtre Catégorie */}
 			<div>
 				<Select
 					onValueChange={(value) =>
@@ -78,16 +96,15 @@ const POIFilters: React.FC<POIFiltersProps> = ({
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="all">{t('allCategories')}</SelectItem>
-                        {categoriesData?.data?.map((category) => (
+                        {categoriesData?.data?.map((category: any) => (
                             <SelectItem key={category.id} value={category.id}>
-                                {(category as any)[locale as 'fr' | 'en' | 'ar']?.name || (category as any).fr?.name || (category as any).name || '—'}
+                                {getCategoryName(category)}
                             </SelectItem>
                         ))}
 					</SelectContent>
 				</Select>
 			</div>
 
-			{/* 3. Filtre Ville */}
 			<div>
 				<Select
 					onValueChange={(value) =>
@@ -99,16 +116,15 @@ const POIFilters: React.FC<POIFiltersProps> = ({
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="all">{t('allCities')}</SelectItem>
-						{citiesData?.data?.map((city) => (
+						{citiesData?.data?.map((city: any) => (
 							<SelectItem key={city.id} value={city.id}>
-								{city.name} {/* Ajustez si la ville a des localisations */}
+								{city.name}
 							</SelectItem>
 						))}
 					</SelectContent>
 				</Select>
 			</div>
 
-			{/* 4. Filtre Premium */}
 			<div className="flex items-center space-x-2 md:col-start-4">
 				<Checkbox
 					id="premium"

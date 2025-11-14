@@ -48,7 +48,7 @@ export interface Localization {
 export interface POIFile {
   id: string;
   fileUrl: string;
-  type: 'image' | 'video' | 'virtualtour';
+  type: 'image' | 'video' | 'virtualtour' | 'imageAlbum';
 }
 
 // Defines a POI Category
@@ -201,6 +201,9 @@ export interface Review {
   created_at?: string; // Snake case from DB
   updatedAt?: string;
   updated_at?: string; // Snake case from DB
+  isAccepted?: boolean;
+  isDeleted?: boolean;
+  aiReport?: string;
   user?: {
     firstName?: string;
     lastName?: string;

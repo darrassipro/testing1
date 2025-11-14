@@ -26,6 +26,8 @@ export interface Theme {
   isDeleted: boolean;
   circuitsCount?: number;
   circuitsFromThemes?: any[];
+  // Added to support the filtered circuits list from the backend
+  circuits?: any[]; 
   created_at: string;
   updated_at: string;
 }
@@ -36,6 +38,14 @@ export interface GetThemesParams {
   search?: string;
   isActive?: boolean;
   sortBy?: 'newest' | 'oldest' | 'name';
+}
+
+// New interface for filtering circuits within a theme
+export interface GetCircuitsFilters {
+  search?: string;
+  sortBy?: 'popular' | 'newest';
+  maxDistance?: number;
+  transportMode?: string;
 }
 
 export interface GetThemesResponse {
@@ -79,12 +89,24 @@ export const themeApi = createApi({
       providesTags: ['Themes'],
     }),
 
-    getThemeById: builder.query<{ status: string; data: Theme }, string>({
-      query: (id) => ({
-        url: `/api/themes/${id}`,
-        method: "GET",
-      }),
-      providesTags: (result, error, id) => [{ type: 'Theme', id }],
+    // Updated to accept filter params
+    getThemeById: builder.query<{ status: string; data: Theme }, { id: string; params?: GetCircuitsFilters }>({
+      query: ({ id, params }) => {
+        const queryParams = new URLSearchParams();
+        
+        if (params?.search) queryParams.append('search', params.search);
+        if (params?.sortBy) queryParams.append('sortBy', params.sortBy);
+        if (params?.maxDistance) queryParams.append('maxDistance', params.maxDistance.toString());
+        if (params?.transportMode) queryParams.append('transportMode', params.transportMode);
+
+        const queryString = queryParams.toString();
+
+        return {
+          url: `/api/themes/${id}${queryString ? `?${queryString}` : ''}`,
+          method: "GET",
+        };
+      },
+      providesTags: (result, error, { id }) => [{ type: 'Theme', id }],
     }),
 
     createTheme: builder.mutation<{ status: string; data: Theme }, FormData>({

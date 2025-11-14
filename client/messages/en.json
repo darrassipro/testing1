@@ -125,11 +125,15 @@
     "search": "Search destinations...",
     "searchButton": "Search"
   },
-  "filters": {
+"filters": {
     "museums": "Museums",
     "restaurants": "Restaurants",
     "monuments": "Monuments",
-    "markets": "Markets"
+    "markets": "Markets",
+    "coffee": "Coffee",
+    "shopping": "Shopping",
+    "hotels": "Hotels",
+    "libraries": "Libraries"
   },
   "featuresSection": {
     "title": "Explore Smarter, Travel Deeper",
@@ -204,6 +208,7 @@
   "ThemePage": {
     "home": "Home",
     "themes": "Circuits",
+    "loading": "Loading ...",
     "searchPlaceholder": "Search for restaurant, coffee, shopping...",
     "errorTitle": "Loading Error",
     "errorMessage": "Unable to load details for this theme.",
@@ -312,7 +317,11 @@
     "previous": "Previous",
     "next": "Next",
     "page": "Page",
-    "pending": "Pending"
+    "pending": "Pending",
+    "rejected": "Rejected",
+    "yourReview": "Your Review",
+    "moderationPending": "Your review is pending moderation and will be visible once approved.",
+    "reason": "Reason"
   },
   "GamificationProfile": {
      "points": "Points",

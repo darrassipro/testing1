@@ -5,18 +5,17 @@ import React from 'react';
 import { POI } from '@/lib/types';
 import { useTranslations } from 'next-intl';
 
-// Les composants que nous avons créés
+// Components
 import MediaGallery from './MediaGallery';
 import AudioPlayer from './AudioPlayer';
 import POIRating from './POIRating';
-import ReviewList from '../social/ReviewList'; // NOUVEL IMPORT
-import ReviewForm from '../social/ReviewForm'; // NOUVEL IMPORT
-import ShareButtons from '../social/ShareButtons'; // NOUVEL IMPORT
-// Icônes et composants UI
+import ReviewList from '../social/ReviewList';
+import ReviewForm from '../social/ReviewForm';
+import ShareButtons from '../social/ShareButtons';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Star, Heart } from 'lucide-react';
-import { Separator } from '@/components/ui/separator'; // NOUVEL IMPORT
+import { MapPin, Star, Heart, Navigation } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 interface POIDetailViewProps {
 	poi: POI;
@@ -27,7 +26,49 @@ const POIDetailView: React.FC<POIDetailViewProps> = ({ poi, locale }) => {
 	const t = useTranslations('PoiDetailPage');
 	const tReviews = useTranslations('ReviewSection');
 
-	// ... (logique getLocaleText, name, description, etc. inchangée)
+    // ✅ Helper: Extract structured coordinate data
+    const getCoordinatesData = () => {
+        if (!poi.coordinates) return null;
+        
+        let coords: any = poi.coordinates;
+        
+        // Parse string if necessary
+        if (typeof coords === 'string') {
+            try {
+                coords = JSON.parse(coords);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        let latitude: number | null = null;
+        let longitude: number | null = null;
+        let rawAddress: string | null = null;
+
+        if (typeof coords === 'object') {
+            // 1. Standard Object format { latitude, longitude, address }
+            if ('latitude' in coords) latitude = Number(coords.latitude);
+            if ('longitude' in coords) longitude = Number(coords.longitude);
+            if ('address' in coords) rawAddress = coords.address;
+
+            // 2. GeoJSON format { type: 'Point', coordinates: [lng, lat] }
+            if (coords.type === 'Point' && Array.isArray(coords.coordinates)) {
+                longitude = coords.coordinates[0];
+                latitude = coords.coordinates[1];
+            }
+        }
+        
+        // 3. Simple Array format [lat, lng]
+        if (Array.isArray(coords) && coords.length >= 2) {
+            latitude = Number(coords[0]);
+            longitude = Number(coords[1]);
+        }
+
+        return { latitude, longitude, rawAddress };
+    };
+
+    const coordsData = getCoordinatesData();
+
 	const getLocaleText = (
 		field: 'name' | 'description' | 'address',
 		defaultValue = t('notAvailable')
@@ -38,32 +79,50 @@ const POIDetailView: React.FC<POIDetailViewProps> = ({ poi, locale }) => {
 
 		if (locale === 'ar') return ar || en || fr || defaultValue;
 		if (locale === 'en') return en || fr || ar || defaultValue;
-		return fr || en || ar || defaultValue; // 'fr' par défaut
+		return fr || en || ar || defaultValue;
 	};
+
+    const getCategoryName = () => {
+        if (!poi.categoryPOI) return null;
+        const catData = poi.categoryPOI as any;
+        const rawCat = catData[locale] || catData.fr;
+
+        if (!rawCat) return null;
+        if (typeof rawCat === 'object') return rawCat.name || null;
+        if (typeof rawCat === 'string') {
+            try {
+                const trimmed = rawCat.trim();
+                if (trimmed.startsWith('{')) return JSON.parse(trimmed).name;
+                return trimmed;
+            } catch (e) { return rawCat; }
+        }
+        return null;
+    };
 
 	const name = getLocaleText('name');
 	const description = getLocaleText('description');
-	const address = getLocaleText('address');
-	const category =
-		poi.categoryPOI?.[locale as 'fr' | 'en' | 'ar'] || poi.categoryPOI?.fr;
+    
+    // Use raw address from coordinates if localized address is missing
+    const fallbackAddress = coordsData?.rawAddress || t('notAvailable');
+	const address = getLocaleText('address', fallbackAddress);
+    
+	const category = getCategoryName(); 
 
     const frAudio = (poi.frLocalization as any)?.audioFiles?.[0];
     const arAudio = (poi.arLocalization as any)?.audioFiles?.[0];
     const enAudio = (poi.enLocalization as any)?.audioFiles?.[0];
 
-	// Generate share URL
 	const shareUrl = typeof window !== 'undefined' 
 		? `${window.location.origin}/${locale}/pois/${poi.id}`
-		: `https://gofez.com/${locale}/pois/${poi.id}`; // Fallback URL
+		: `https://gofez.com/${locale}/pois/${poi.id}`;
 
 	return (
 		<>
 			<div className="container mx-auto max-w-7xl px-4 py-8">
-				{/* Grille principale (2 colonnes sur grand écran) */}
 				<div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-					{/* Colonne de Gauche (Média) */}
+					{/* Left Column (Media) */}
 					<div className="lg:col-span-7">
-						<MediaGallery poiFile={poi.poiFile} poiName={name} />
+						<MediaGallery files={poi.files} poiName={name} />
 						<div className="mt-6">
 							<AudioPlayer
 								frAudioUrl={frAudio}
@@ -73,18 +132,19 @@ const POIDetailView: React.FC<POIDetailViewProps> = ({ poi, locale }) => {
 						</div>
 					</div>
 
-					{/* Colonne de Droite (Informations) */}
+					{/* Right Column (Info) */}
 					<div className="lg:col-span-5">
 						<div className="flex flex-col">
-							{/* ... (Catégorie, Nom, Badge Premium, Adresse, Note... inchangés) ... */}
 							{category && (
 								<span className="text-sm font-semibold uppercase tracking-wide text-blue-600">
 									{category}
 								</span>
 							)}
+							
 							<h1 className="mt-1 text-3xl font-bold tracking-tight text-gray-900">
 								{name}
 							</h1>
+							
 							{poi.isPremium && (
 								<Badge
 									variant="destructive"
@@ -94,27 +154,51 @@ const POIDetailView: React.FC<POIDetailViewProps> = ({ poi, locale }) => {
 									{t('premium')}
 								</Badge>
 							)}
-							<div className="mt-4 flex items-center gap-2">
-								<MapPin className="h-5 w-5 flex-shrink-0 text-gray-500" />
-								<p className="text-base text-gray-700">{address}</p>
-							</div>{/* Note, Favori et Partage */}
-						<div className="mt-4 flex items-center gap-4">
-							<POIRating
-								rating={poi.rating || 0}
-								reviewCount={poi.reviewCount || 0}
-							/>
-							{/* TODO: Gérer l'état de favori */}
-							<Button variant="outline" size="icon">
-								<Heart className="h-5 w-5" />
-							</Button>
-							{/* --- BOUTON AJOUTÉ --- */}
-							<ShareButtons
-								shareUrl={shareUrl}
-								resourceType="poi"
-								resourceId={poi.id}
-								title={name}
-							/>
-						</div>
+
+                            {/* --- Location Section --- */}
+							<div className="mt-6 rounded-lg bg-gray-50 p-4 border border-gray-100">
+                                <div className="flex items-start gap-3">
+                                    <MapPin className="h-5 w-5 flex-shrink-0 text-blue-600 mt-1" />
+                                    <div className="space-y-1">
+                                        <p className="text-base font-medium text-gray-900">Adresse</p>
+                                        <p className="text-gray-700">{address}</p>
+                                        
+                                        {/* Explicitly show Coordinates if available */}
+                                        {coordsData && (coordsData.latitude || coordsData.longitude) && (
+                                            <div className="pt-2 mt-2 border-t border-gray-200 text-sm text-gray-600 flex flex-col gap-1">
+                                                <div className="flex items-center gap-2">
+                                                    <Navigation className="h-3 w-3" />
+                                                    <span className="font-mono text-xs">
+                                                        Lat: {coordsData.latitude?.toFixed(6)}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Navigation className="h-3 w-3" />
+                                                    <span className="font-mono text-xs">
+                                                        Lng: {coordsData.longitude?.toFixed(6)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+							</div>
+
+							<div className="mt-4 flex items-center gap-4">
+								<POIRating
+									rating={poi.rating || 0}
+									reviewCount={poi.reviewCount || 0}
+								/>
+								<Button variant="outline" size="icon">
+									<Heart className="h-5 w-5" />
+								</Button>
+								<ShareButtons
+									shareUrl={shareUrl}
+									resourceType="poi"
+									resourceId={poi.id}
+									title={name}
+								/>
+							</div>
 					
 							<div className="prose prose-lg mt-6 max-w-none text-gray-700">
 								<p>{description}</p>
@@ -124,7 +208,6 @@ const POIDetailView: React.FC<POIDetailViewProps> = ({ poi, locale }) => {
 				</div>
 			</div>
 
-			{/* --- NOUVELLE SECTION AVIS --- */}
 			<Separator className="my-12" />
 
 			<div className="container mx-auto max-w-7xl px-4">
@@ -132,15 +215,10 @@ const POIDetailView: React.FC<POIDetailViewProps> = ({ poi, locale }) => {
 					{tReviews('reviewsTitle')} ({poi.reviewCount || 0})
 				</h2>
 
-				{/* Grille pour le formulaire et la liste */}
 				<div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-12">
-					{/* Colonne Formulaire */}
 					<div className="lg:col-span-5">
-						{/* TODO: Afficher uniquement si l'utilisateur est connecté */}
 						<ReviewForm poiId={poi.id} />
 					</div>
-
-					{/* Colonne Liste des Avis */}
 					<div className="lg:col-span-7">
 						<ReviewList poiId={poi.id} />
 					</div>

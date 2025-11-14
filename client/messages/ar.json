@@ -125,11 +125,15 @@
     "search": "ابحث عن الوجهات...",
     "searchButton": "بحث"
   },
-  "filters": {
+"filters": {
     "museums": "المتاحف",
     "restaurants": "المطاعم",
     "monuments": "المعالم الأثرية",
-    "markets": "الأسواق"
+    "markets": "الأسواق",
+    "coffee": "المقاهي",
+    "shopping": "التسوق",
+    "hotels": "الفنادق",
+    "libraries": "المكتبات"
   },
   "featuresSection": {
     "title": "استكشف بذكاء، سافر بعمق",
@@ -204,6 +208,7 @@
   "ThemePage": {
   "home": "الرئيسية",
   "themes": "المسارات",
+  "loading": "في طور المعالجة...",
   "searchPlaceholder": "ابحث عن مطعم، مقهى، تسوق...",
   "errorTitle": "خطأ في التحميل",
   "errorMessage": "تعذر تحميل تفاصيل هذا الموضوع.",
@@ -312,7 +317,11 @@
     "previous": "السابق",
     "next": "التالي",
     "page": "صفحة",
-    "pending": "قيد المراجعة"
+    "pending": "قيد المراجعة",
+    "rejected": "مرفوض",
+    "yourReview": "تقييمك",
+    "moderationPending": "تقييمك قيد المراجعة وسيظهر للعامة بمجرد الموافقة عليه.",
+    "reason": "السبب"
   },
   "GamificationProfile": {
     "points": "النقاط",

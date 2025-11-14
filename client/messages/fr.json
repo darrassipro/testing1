@@ -125,11 +125,15 @@
     "search": "Rechercher des destinations...",
     "searchButton": "Rechercher"
   },
-  "filters": {
+"filters": {
     "museums": "Musées",
     "restaurants": "Restaurants",
     "monuments": "Monuments",
-    "markets": "Marchés"
+    "markets": "Marchés",
+    "coffee": "Cafés",
+    "shopping": "Shopping",
+    "hotels": "Hôtels",
+    "libraries": "Bibliothèques"
   },
   "featuresSection": {
     "title": "Explorez plus intelligemment, voyagez plus profondément",
@@ -204,6 +208,7 @@
   "ThemePage": {
     "home": "Accueil",
   "themes": "Circuits",
+  "loading": "Chargement...",
   "searchPlaceholder": "Rechercher un restaurant, café, shopping...",
     "errorTitle": "Erreur de chargement",
     "errorMessage": "Impossible de charger les détails pour ce thème.",
@@ -395,7 +400,11 @@
     "previous": "Précédent",
     "next": "Suivant",
     "page": "Page",
-    "pending": "En attente"
+    "pending": "En attente",
+    "rejected": "Refusé",
+    "yourReview": "Votre avis",
+    "moderationPending": "Votre avis est en cours de modération et sera visible publiquement une fois approuvé.",
+    "reason": "Raison"
   },
   "CircuitsPage": {
     "title": "Découvrez nos Circuits",
