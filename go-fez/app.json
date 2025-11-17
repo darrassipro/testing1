@@ -1,0 +1,71 @@
+{
+  "expo": {
+    "name": "go-fez",
+    "slug": "go-fez",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/app-logo.png",
+    "scheme": "gofez",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "splash": {
+      "image": "./assets/images/app-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/app-logo.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anassdabaghi.gofez"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/MomoTrustDisplay-Regular.ttf"],
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "MainFont",
+                "fontDefinitions": [
+                  {
+                    "path": "./assets/fonts/MomoTrustDisplay-Regular.ttf",
+                    "weight": 700
+                  },
+                  {
+                    "path": "./assets/fonts/MomoTrustDisplay-Regular.ttf",
+                    "weight": 700
+                  }
+                ]
+              }
+            ]
+          },
+          "ios": {
+            "fonts": [
+              "./assets/fonts/MomoTrustDisplay-Regular.ttf",
+              "./assets/fonts/MomoTrustDisplay-Regular.ttf"
+            ]
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

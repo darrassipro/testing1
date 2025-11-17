@@ -39,6 +39,19 @@ export interface RemovePOIResponse {
   };
 }
 
+export interface AddPOIRequest {
+  routeId: string;
+  poiId: string;
+}
+
+export interface AddPOIResponse {
+  status: boolean;
+  message: string;
+  data?: {
+    removedTrace: any;
+  };
+}
+
 export interface GetAllRoutesParams {
   search?: string;
   page?: number;
@@ -54,6 +67,66 @@ export interface GetAllRoutesResponse {
     totalPages: number;
   };
   data?: any[];
+}
+
+export interface RouteDetailAdminResponse {
+  status: boolean;
+  message: string;
+  data?: {
+    route: {
+      id: string;
+      circuitId: string | null;
+      userId: number;
+      isCompleted: boolean;
+      createdAt: string;
+      completedAt?: string;
+      isCircuitRoute: boolean;
+      // Navigation route fields
+      poiId?: string;
+      poiName?: string;
+      startLocation?: any;
+      endLocation?: any;
+      transportMode?: string;
+      user: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+      };
+      circuit: {
+        id: string;
+        fr: any;
+        ar: any;
+        en: any;
+        city: any;
+      } | null;
+    };
+    statistics: {
+      totalPOIs: number;
+      visitedCount: number;
+      removedCount: number;
+      remainingCount: number;
+      totalDistance: string;
+      duration: number;
+      tracesCount: number;
+    };
+    visitedTraces: Array<{
+      id: string;
+      latitude: number;
+      longitude: number;
+      poiId?: string;
+      poi?: any;
+      createdAt: string;
+    }>;
+    visitedPois: any[];
+    removedPois: any[];
+    remainingPois: any[];
+    currentLocation: {
+      latitude: number;
+      longitude: number;
+      timestamp: string;
+    } | null;
+  };
 }
 
 export interface SavedRoute {
@@ -186,6 +259,16 @@ export const routeApi = createApi({
       invalidatesTags: (result, error, arg) => arg?.routeId ? [{ type: "Route", id: arg.routeId }] : [],
     }),
     
+    // Add POI back to route (circuit customization)
+    addPOIToRoute: builder.mutation<AddPOIResponse, AddPOIRequest>({
+      query: (body) => ({
+        url: `/api/routes/add-poi`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (result, error, arg) => arg?.routeId ? [{ type: "Route", id: arg.routeId }] : [],
+    }),
+    
     // Save a completed navigation route (from map navigation)
     saveRoute: builder.mutation<SaveRouteResponse, SaveRouteRequest>({
       query: (body) => ({
@@ -222,6 +305,15 @@ export const routeApi = createApi({
       },
       providesTags: ["AllRoutes"],
     }),
+    
+    // Get detailed route information for admin
+    getRouteDetailAdmin: builder.query<RouteDetailAdminResponse, string>({
+      query: (id) => ({
+        url: `/api/routes/admin/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Route", id }],
+    }),
   }),
 });
 
@@ -230,9 +322,11 @@ export const {
   useGetRouteByIdQuery, 
   useAddVisitedTraceMutation,
   useRemovePOIFromRouteMutation,
+  useAddPOIToRouteMutation,
   useSaveRouteMutation,
   useGetUserRoutesQuery,
   useGetAllRoutesQuery,
+  useGetRouteDetailAdminQuery,
 } = routeApi;
 export default routeApi;
 

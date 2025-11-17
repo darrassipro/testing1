@@ -76,6 +76,9 @@ const handleTriggerLogin = () => {
   // Get user data from Redux
   const { user } = useSelector((state: RootState) => state.auth);
   
+  // GPS Tracking 
+  const { position: gpsPosition, error: gpsError, startTracking, stopTracking } = useGPSTracker(true);
+  
   // Fetch detailed POI data when selected
   const { data: fetchedPoiData, isFetching: isFetchingPoi } = useGetPOIByIdQuery(
     selectedPoiId ?? (skipToken as any)
@@ -598,7 +601,7 @@ const [isLoginProcessing, setIsLoginProcessing] = useState(false);
       className="relative mx-auto bg-[#D9D9D9] rounded-[38.209px] overflow-hidden"
       style={{
         width: '1447.92px',
-        height: '1111px',
+        height: '620px',
         maxWidth: '100%',
       }}
     >
@@ -671,21 +674,10 @@ const [isLoginProcessing, setIsLoginProcessing] = useState(false);
                   background: "rgba(0, 112, 54, 0.2)",
                 }}
               >
-                <div
-                  className="absolute"
-                  style={{
-                    width: 51.05,
-                    height: 57.69,
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%) rotate(-129.37deg)",
-                    background: "linear-gradient(42.07deg, rgba(0, 214, 103, 0) 24.05%, rgba(0, 112, 54, 0.5) 63.73%)",
-                  }}
-                />
               </div>
 
               {/* Main marker */}
-              <div className="relative">
+              <div className="absolute -left-[15px] -top-[15px]">
                 <div className="w-[30px] h-[30px] bg-white rounded-full border-2 border-white shadow-lg overflow-hidden">
                   {user?.profileImage ? (
                     <img 
@@ -706,8 +698,8 @@ const [isLoginProcessing, setIsLoginProcessing] = useState(false);
           </Marker>
         )}
 
-  {/* POI Markers */}
-  {filteredPois.map((poi) => {
+        {/* POI Markers */}
+        {filteredPois.map((poi) => {
           const isSelected = selectedPoi?.id === poi.id;
           const isHovered = hoveredPoi === poi.id;
 
@@ -726,11 +718,11 @@ const [isLoginProcessing, setIsLoginProcessing] = useState(false);
                 onMouseEnter={() => !isNavigating && setHoveredPoi(poi.id)}
                 onMouseLeave={() => !isNavigating && setHoveredPoi(null)}
                   className={cn(
-                  "border-white rounded-[12px] overflow-hidden transition-all",
+                  "border-white rounded-full overflow-hidden transition-all border-[3px] ",
                   "shadow-[0px_36px_14px_rgba(0,0,0,0.01),0px_20px_12px_rgba(0,0,0,0.05),0px_9px_9px_rgba(0,0,0,0.09),0px_2px_5px_rgba(0,0,0,0.1)]",
                   isNavigatingToThisPoi 
-                    ? "w-[50px] h-[50px] border-[3px] border-[#007036] cursor-default" 
-                    : "w-[81px] h-[81px] border-[5px] cursor-pointer",
+                    ? "w-[30px] h-[30px]  border-[#007036] cursor-default" 
+                    : "w-[50px] h-[50px]  cursor-pointer",
                   !isNavigating && (isSelected || isHovered) && "scale-110 border-[#007036]"
                 )}
               >

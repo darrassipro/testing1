@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react';
 interface PageHeaderProps {
   title: string;
   count?: number;
-  onAdd: () => void;
+  onAdd?: () => void;
   addLabel?: string;
 }
 
@@ -18,13 +18,15 @@ export function PageHeader({ title, count, onAdd, addLabel = 'Nouveau' }: PageHe
           <p className="text-gray-600 mt-1">{count} au total</p>
         )}
       </div>
-      <button
-        onClick={onAdd}
-        className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg font-medium hover:shadow-lg transition-all flex items-center space-x-2"
-      >
-        <Plus className="w-5 h-5" />
-        <span>{addLabel}</span>
-      </button>
+      {onAdd && (
+        <button
+          onClick={onAdd}
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg font-medium hover:shadow-lg transition-all flex items-center space-x-2"
+        >
+          <Plus className="w-5 h-5" />
+          <span>{addLabel}</span>
+        </button>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { Geist, Mulish, IBM_Plex_Sans_Arabic, Cairo, Tajawal, Poppins } from 'next/font/google';
+import { Geist, Mulish, IBM_Plex_Sans_Arabic, Cairo, Tajawal, Poppins, Six_Caps, Roboto } from 'next/font/google';
 import './globals.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -41,6 +41,19 @@ const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic'],
   variable: '--font-ibm-plex-sans-arabic',
   weight: ['100', '200', '300', '400', '500', '600', '700'],
+});
+
+const sixCaps = Six_Caps({
+  subsets: ['latin'],
+  variable: '--font-six-caps',
+  weight: '400',
+});
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  variable: '--font-roboto',
+  weight: ['100', '300', '400', '500', '700', '900'],
+  style: ['normal', 'italic'],
 });
 
 const geistSans = Geist({
@@ -87,8 +100,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Six+Caps&display=swap" rel="stylesheet" />
+        <link href="https://fonts.cdnfonts.com/css/bignoodletitling" rel="stylesheet" />
+      </head>
  <body
-        className={`${cairo.variable} ${tajawal.variable} ${poppins.variable} ${mulish.variable} ${ibmPlexSansArabic.variable} ${geistSans.variable} font-cairo antialiased bg-background text-foreground`}
+        className={`${cairo.variable} ${tajawal.variable} ${poppins.variable} ${mulish.variable} ${ibmPlexSansArabic.variable} ${geistSans.variable} ${sixCaps.variable} ${roboto.variable} font-roboto antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <Suspense>

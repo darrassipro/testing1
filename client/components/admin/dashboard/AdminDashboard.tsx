@@ -84,45 +84,49 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Stats Cards Grid - Responsive 6 Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-[7px]">
-            <StatsCard
-              title="Utilisateurs inscrits"
-              value={stats?.totalUsers?.toLocaleString() || '0'}
-              subtitle={`+${stats?.newUsersThisMonth || 0} ce mois`}
-              isPositive={true}
-            />
-            <StatsCard
-              title="Circuits actifs"
-              value={stats?.activeCircuits?.toString() || '0'}
-              subtitle={`+5 nouveaux`}
-              isPositive={true}
-            />
-            <StatsCard
-              title="Routes complétées"
-              value={totalRoutes?.toLocaleString() || '0'}
-              subtitle={`Circuits & Navigation`}
-              isPositive={true}
-            />
-            <StatsCard
-              title="Points d'intérêt"
-              value={stats?.totalPois?.toString() || '0'}
-              subtitle={`+${stats?.newPoisThisWeek || 0} ajoutés cette semaine`}
-              isPositive={true}
-            />
-            <StatsCard
-              title="Thèmes disponibles"
-              value={stats?.totalThemes?.toString() || '0'}
-              subtitle={`+${stats?.newThemesThisMonth || 0} nouveaux thèmes`}
-              isPositive={true}
-            />
-            <StatsCard
-              title="Points attribués totaux"
-              value={stats?.totalPoints?.toLocaleString() || '0'}
-              subtitle="cumulés par les utilisateurs"
-              isPositive={false}
-            />
-          </div>
+{/* Stats Cards Grid - Responsive 6 Cards */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  {/* Première rangée */}
+  <StatsCard
+    title="Utilisateurs inscrits"
+    value={stats?.totalUsers?.toLocaleString() || '0'}
+    subtitle={`+${stats?.newUsersThisMonth || 0} ce mois`}
+    isPositive={true}
+  />
+  <StatsCard
+    title="Circuits actifs"
+    value={stats?.activeCircuits?.toString() || '0'}
+    subtitle={`+5 nouveaux`}
+    isPositive={true}
+  />
+  <StatsCard
+    title="Routes complétées"
+    value={totalRoutes?.toLocaleString() || '0'}
+    subtitle={`Circuits & Navigation`}
+    isPositive={true}
+  />
+
+  {/* Deuxième rangée */}
+  <StatsCard
+    title="Points d'intérêt"
+    value={stats?.totalPois?.toString() || '0'}
+    subtitle={`+${stats?.newPoisThisWeek || 0} ajoutés cette semaine`}
+    isPositive={true}
+  />
+  <StatsCard
+    title="Thèmes disponibles"
+    value={stats?.totalThemes?.toString() || '0'}
+    subtitle={`+${stats?.newThemesThisMonth || 0} nouveaux thèmes`}
+    isPositive={true}
+  />
+  <StatsCard
+    title="Points attribués totaux"
+    value={stats?.totalPoints?.toLocaleString() || '0'}
+    subtitle="cumulés par les utilisateurs"
+    isPositive={false}
+  />
+</div>
+
         </div>
 
         {/* Activity Chart */}

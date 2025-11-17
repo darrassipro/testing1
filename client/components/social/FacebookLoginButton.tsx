@@ -1,6 +1,6 @@
 'use client';
-
 import React from 'react';
+import { useSocialPopup } from '@/hooks/useSocialPopup'; // Import the hook
 
 interface FacebookLoginButtonProps {
   onClick?: () => void;
@@ -8,15 +8,21 @@ interface FacebookLoginButtonProps {
 }
 
 export default function FacebookLoginButton({ onClick, color = 'blue' }: FacebookLoginButtonProps) {
-  const colorClasses =
-    color === 'green'
+  const { openPopup } = useSocialPopup();
+
+  const handleClick = () => {
+    if (onClick) onClick();
+    openPopup('facebook');
+  };
+
+  const colorClasses = color === 'green'
       ? 'border-emerald-200 hover:bg-emerald-50'
       : 'border-blue-200 hover:bg-blue-50';
 
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleClick}
       className={`flex items-center justify-center py-2.5 px-4 border rounded-lg transition-colors ${colorClasses}`}
     >
       <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="#1877F2">

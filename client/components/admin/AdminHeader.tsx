@@ -25,6 +25,7 @@ export default function AdminHeader({ locale = 'fr' }: AdminHeaderProps) {
     const [mounted, setMounted] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const displayName = user ? ([user.firstName, user.lastName].filter(Boolean).join(' ') || user.email) : '';
     
     useEffect(() => {
       setMounted(true);
@@ -217,7 +218,7 @@ export default function AdminHeader({ locale = 'fr' }: AdminHeaderProps) {
               {mounted && user && (
                 <div className="border-t border-[#E0E0E0] mt-2 pt-2">
                   <div className="px-6 py-3">
-                    <p className="text-sm font-medium text-[#353535]">{user.fullname || user.email}</p>
+                    <p className="text-sm font-medium text-[#353535]">{displayName}</p>
                     <p className="text-xs text-[#6E6E6E] truncate">{user.email}</p>
                   </div>
                   <button

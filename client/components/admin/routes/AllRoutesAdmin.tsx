@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { useGetAllRoutesQuery } from '@/services/api/RouteApi';
-import { Search, Filter, MapPin, User, Calendar, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { Search, Filter, MapPin, User, Calendar, CheckCircle, XCircle, Loader2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function AllRoutesAdmin() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
@@ -18,6 +20,19 @@ export default function AllRoutesAdmin() {
 
   const routes = data?.data || [];
   const pagination = data?.pagination;
+
+  // Debug: Log first route data
+  React.useEffect(() => {
+    if (routes.length > 0) {
+      console.log('🔍 DEBUG - First route in list:', {
+        id: routes[0].id,
+        circuitId: routes[0].circuitId,
+        circuit: routes[0].circuit,
+        poiName: routes[0].poiName,
+        distance: routes[0].distance
+      });
+    }
+  }, [routes]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -106,6 +121,9 @@ export default function AllRoutesAdmin() {
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                       Created At
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -114,19 +132,35 @@ export default function AllRoutesAdmin() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-900">
-                            User #{route.userId}
-                          </span>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {route.user?.firstName && route.user?.lastName 
+                                ? `${route.user.firstName} ${route.user.lastName}`
+                                : `User #${route.userId}`
+                              }
+                            </p>
+                            {route.user?.email && (
+                              <p className="text-xs text-gray-500">{route.user.email}</p>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {route.circuit?.fr?.name || route.circuit?.en?.name || 'N/A'}
+                          {route.circuit 
+                            ? (route.circuit.fr?.name || route.circuit.en?.name || route.circuit.ar?.name || 'Unknown Circuit')
+                            : (route.poiName || 'Navigation Route')
+                          }
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-600">
-                          {route.circuit?.city?.fr?.name || route.circuit?.city?.name || 'N/A'}
+                          {route.circuit?.city 
+                            ? (route.circuit.city.name || route.circuit.city.nameEn || route.circuit.city.nameAr || 'N/A')
+                            : route.navigationPOI?.city
+                              ? (route.navigationPOI.city.name || route.navigationPOI.city.nameEn || route.navigationPOI.city.nameAr || 'N/A')
+                              : 'N/A'
+                          }
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -147,6 +181,20 @@ export default function AllRoutesAdmin() {
                           <Calendar className="w-4 h-4" />
                           {new Date(route.createdAt || route.created_at).toLocaleDateString()}
                         </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/admin/routes/${route.id}`);
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          <Eye className="w-4 h-4" />
+                          View Details
+                        </Button>
                       </td>
                     </tr>
                   ))}

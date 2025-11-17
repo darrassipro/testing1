@@ -85,17 +85,9 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({
       toast.success(t('success') || 'Mot de passe réinitialisé avec succès !');
       onClose?.();
 
-      // Rediriger selon le rôle de l'utilisateur
-      const userRole = response.user?.role?.toLowerCase();
-      console.log('User role:', userRole);
-
-      if (userRole === 'admin' || userRole === 'moderator') {
-        console.log('Redirecting to admin panel');
-        router.push("/admin");
-      } else {
-        console.log('Redirecting to profile');
-        router.push("/profile");
-      }
+      // Redirect to profile (admin check will be handled by backend API)
+      console.log('Redirecting to profile');
+      router.push("/profile");
     } catch (err: any) {
       console.error('Reset password error:', err);
       const errorMessage = err?.data?.message || t('error') || 'Erreur lors de la réinitialisation du mot de passe';

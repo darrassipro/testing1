@@ -11,11 +11,7 @@ import DiscoverMapSection from "@/components/accueil/features/DiscoverMapSection
 import Circuits from "@/components/accueil/features/circuits";
 import AppDownload from "@/components/accueil/AppDownload";
 import Footer from "@/components/footer/footer";
-
-// 🚫 Disable SSR for Hero
-const Hero = dynamic(() => import("@/components/accueil/hero/hero"), {
-  ssr: false,
-});
+import Hero from "@/components/accueil/hero/hero";
 
 export default function FezDiscoveryApp() {
   const locale = useLocale() as "en" | "fr" | "ar";
@@ -35,7 +31,7 @@ export default function FezDiscoveryApp() {
       <Hero dir={dir} isRTL={isRTL} />
       <FeaturesSection />
       <Themes locale={locale} isRTL={isRTL} />
-      <DiscoverMapSection locale={locale} isRTL={isRTL} />
+      <DiscoverMapSection locale={locale} isRTL={isRTL} height={620} />
       {/* <Circuits locale={locale} isRTL={isRTL} /> */}
       <AppDownload isRTL={isRTL} />
       <Footer locale={locale} isRTL={isRTL} onLanguageChange={switchLocale} />

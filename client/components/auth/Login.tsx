@@ -67,18 +67,7 @@ const Login: React.FC<LoginProps> = ({ onClose, onSwitchToSignUp, onSwitchToForg
       
       toast.success(t('success'));
       onClose?.();
-
-      // Redirect based on user role
-      const userRole = response.user?.role?.toLowerCase();
-      console.log('User role:', userRole);
-      
-      if (userRole === 'admin' || userRole === 'moderator') {
-        console.log('Redirecting to admin panel');
-        router.push("/admin");
-      } else {
-        console.log('Redirecting to profile');
-        router.push("/profile");
-      }
+      router.push("/profile");
 
     } catch (err: any) {
       console.error('Login error:', err);

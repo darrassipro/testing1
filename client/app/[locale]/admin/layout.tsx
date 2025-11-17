@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminFooter from '@/components/admin/AdminFooter';
 import { LoadingState } from '@/components/admin/shared/LoadingState';
+import { useCheckAdminRightsQuery } from '@/services/api/UserApi';
 // Import the action to open the login modal
 import { openLoginModal } from '@/services/slices/authSlice';
 
@@ -24,24 +25,27 @@ export default function AdminLayout({
   
   // Get user auth state from Redux
   const { user } = useSelector((state: any) => state.auth);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  
+  const { data: adminData, isLoading, error } = useCheckAdminRightsQuery(undefined, {
+    skip: !user, // Only run if user is logged in
+  });
 
   useEffect(() => {
-    // Check if user exists and has admin role
-    if (!user || user.role !== 'admin') {
-      // 1. Redirect unauthorized users to the homepage
+    // If no user logged in, redirect to homepage 
+    if (!user) {
       router.replace(`/${locale}`);
-      
-      // 2. Trigger the login modal to open (using Redux action)
       dispatch(openLoginModal());
-    } else {
-      // Grant access
-      setIsAuthorized(true);
+      return;
     }
-  }, [user, router, locale, dispatch]);
+
+    // If API check completed and user is not admin, redirect
+    if (!isLoading && adminData && !adminData.isAdmin) {
+      router.replace(`/${locale}`);
+    }
+  }, [user, adminData, isLoading, router, locale, dispatch]);
 
   // Show loading state while checking permissions
-  if (!isAuthorized) {
+  if (!user || isLoading || !adminData || !adminData.isAdmin) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <LoadingState message="Checking access permissions..." />

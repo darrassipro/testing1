@@ -2,38 +2,77 @@
 
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
-import { useRouter } from '@/i18n/navigation'; // Import router for navigation
+import { useRouter } from '@/i18n/navigation';
+import { useGetAllCategoriesQuery } from '@/services/api/CategoryApi';
 
 interface HeroProps {
   dir: string;
   isRTL: boolean;
 }
 
-export default function Hero({ dir, isRTL }: HeroProps) {
+const Hero = ({ dir, isRTL }: HeroProps) => {
   const t = useTranslations();
-  const router = useRouter(); // Initialize router
+  const locale = useLocale();
+  const router = useRouter();
   const [imgError, setImgError] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(''); // State for search input
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Handle search action
+  const { data: categoriesData, isLoading: isLoadingCategories } = useGetAllCategoriesQuery();
+
+  // Logic to send search query
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      // Redirect to POIs page with search parameter
       router.push(`/pois?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
-  // Handle Enter key press
+  // Logic to send Category AND Search Query (if it exists)
+  const handleCategoryClick = (categoryId: string) => {
+    const params = new URLSearchParams();
+    params.set('category', categoryId);
+    
+    // If user has typed something, include it in the category filter
+    if (searchQuery.trim()) {
+      params.set('search', searchQuery.trim());
+    }
+    
+    router.push(`/pois?${params.toString()}`);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
   };
 
+  const getCategoryName = (category: any) => {
+    if (!category) return '';
+    let locData = category[locale] || category.fr || category.en || category.ar;
+    if (typeof locData === 'string') {
+      try {
+        locData = JSON.parse(locData);
+      } catch (e) {
+        return 'Category';
+      }
+    }
+    return locData?.name || 'Category';
+  };
+
+  const getCategoryIcon = (category: any) => {
+    if (category.icon) return category.icon;
+    const name = (getCategoryName(category) || '').toLowerCase();
+    if (name.includes('restaurant')) return '/images/RESTAURANT.png';
+    if (name.includes('coffee') || name.includes('café')) return '/images/COFFE-CUP.png';
+    if (name.includes('shop') || name.includes('market') || name.includes('marché')) return '/images/SHOP.png';
+    return '/images/MUSEUM.png';
+  };
+
+  const displayCategories = categoriesData?.data?.slice(0, 8) || [];
+
   return (
-    <div className="relative w-full pt-[90px] md:pt-[100px] text-white overflow-hidden min-h-[600px] md:min-h-[700px]">
+    <div className="relative w-full pt-[70px] md:pt-[80px] text-white overflow-hidden h-screen md:h-screen max-h-[900px] flex items-center justify-center">
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full">
         {!imgError ? (
@@ -53,26 +92,23 @@ export default function Hero({ dir, isRTL }: HeroProps) {
             Image failed to load
           </div>
         )}
-
-        {/* Lighter overlay to make background more visible */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#02355E]/30 via-[#02355E]/20 to-[#02355E]/40" />
       </div>
 
       {/* Hero Content */}
-      <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+      <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-bold mb-5 md:mb-6 leading-tight">
+          <h1 className="text-5xl md:text-4xl lg:text-[75px] font-regular mb-5 md:mb-6 leading-[1.3] lg:leading-[1] uppercase font-noodle">
             {t('hero.discover')} <span className="text-emerald-400">{t('hero.fez')}</span>
-            <br />
-            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl">{t('hero.through')}</span>
+            <span className="">{' ' + t('hero.through')}</span>
           </h1>
-          <p className="text-base md:text-xl text-gray-100 mb-8 md:mb-10 leading-relaxed">
+          <p className="text-base md:text-xl text-gray-100 mb-6 md:mb-7 leading-relaxed">
             {t('hero.subtitle')}
           </p>
 
           {/* Search Bar */}
           <div className="max-w-[600px] mx-auto mb-8">
-            <div className={`relative bg-white rounded-full px-5 md:px-7 py-3.5 md:py-4 flex items-center gap-3 shadow-2xl ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className={`relative bg-white rounded-full px-4 md:px-6 py-3 md:py-2 flex items-center gap-3 shadow-2xl ${isRTL ? 'flex-row-reverse' : ''}`}>
               <Search className="text-gray-400 flex-shrink-0" size={20} />
               <input
                 type="text"
@@ -83,99 +119,47 @@ export default function Hero({ dir, isRTL }: HeroProps) {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
               />
-              <button 
+              <button
                 onClick={handleSearch}
-                className="bg-emerald-600 text-white px-5 md:px-7 py-2 md:py-2.5 rounded-full font-semibold hover:bg-emerald-700 transition text-sm md:text-base whitespace-nowrap shadow-lg"
+                className="bg-emerald-600 text-white px-5 md:px-7 py-2 md:py-2 rounded-full font-semibold hover:bg-emerald-700 transition text-sm md:text-base whitespace-nowrap shadow-lg"
               >
                 {t('hero.searchButton')}
               </button>
             </div>
           </div>
 
-          {/* Filter Pills Container - 8 Buttons */}
+          {/* Filter Pills */}
           <div className="w-full max-w-[1000px] mx-auto">
             <div className="flex flex-wrap justify-center items-center gap-3 px-2">
-              
-              {/* 1. Restaurants */}
-              <button className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition">
-                <div className="w-6 h-6 relative">
-                  <Image src="/images/RESTAURANT.png" alt="Restaurant" fill className="object-contain" />
-                </div>
-                <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
-                  {t('filters.restaurants')}
-                </span>
-              </button>
-
-              {/* 2. Coffee */}
-              <button className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition">
-                <div className="w-6 h-6 relative">
-                  <Image src="/images/COFFE-CUP.png" alt="Coffee" fill className="object-contain" />
-                </div>
-                <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
-                  {t('filters.coffee')}
-                </span>
-              </button>
-
-              {/* 3. Shopping */}
-              <button className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition">
-                <div className="w-6 h-6 relative">
-                  <Image src="/images/SHOP.png" alt="Shop" fill className="object-contain" />
-                </div>
-                <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
-                  {t('filters.shopping')}
-                </span>
-              </button>
-
-              {/* 4. Museums */}
-              <button className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition">
-                <div className="w-6 h-6 relative">
-                  <Image src="/images/MUSEUM.png" alt="Museum" fill className="object-contain" />
-                </div>
-                <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
-                  {t('filters.museums')}
-                </span>
-              </button>
-
-              {/* 5. Hotels */}
-              <button className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition">
-                 <div className="w-6 h-6 relative">
-                  <Image src="/images/RESTAURANT.png" alt="Hotel" fill className="object-contain" /> 
-                </div>
-                <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
-                  {t('filters.hotels')}
-                </span>
-              </button>
-              
-               {/* 6. Libraries */}
-               <button className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition">
-                 <div className="w-6 h-6 relative">
-                  <Image src="/images/MUSEUM.png" alt="Library" fill className="object-contain" /> 
-                </div>
-                <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
-                  {t('filters.libraries')}
-                </span>
-              </button>
-
-              {/* 7. Monuments */}
-              <button className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition">
-                 <div className="w-6 h-6 relative">
-                  <Image src="/images/MUSEUM.png" alt="Monument" fill className="object-contain" /> 
-                </div>
-                <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
-                  {t('filters.monuments')}
-                </span>
-              </button>
-
-              {/* 8. Markets */}
-              <button className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition">
-                 <div className="w-6 h-6 relative">
-                  <Image src="/images/SHOP.png" alt="Market" fill className="object-contain" /> 
-                </div>
-                <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
-                  {t('filters.markets')}
-                </span>
-              </button>
-
+              {isLoadingCategories ? (
+                Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index} className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] w-32 bg-white/5 backdrop-blur-md rounded-full border border-white/10 animate-pulse">
+                    <div className="w-6 h-6 bg-white/20 rounded-full"></div>
+                    <div className="w-20 h-4 bg-white/20 rounded"></div>
+                  </div>
+                ))
+              ) : (
+                displayCategories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => handleCategoryClick(category.id)} // Updated handler
+                    className="flex flex-row justify-center items-center px-4 py-[9.4px] gap-[9.4px] h-[43px] bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition"
+                  >
+                    <div className="w-6 h-6 relative">
+                      <Image
+                        src={getCategoryIcon(category)}
+                        alt={getCategoryName(category)}
+                        fill
+                        className="object-contain"
+                        onError={(e) => { (e.target as HTMLImageElement).src = '/images/MUSEUM.png'; }}
+                      />
+                    </div>
+                    <span className="font-['Inter'] font-medium text-base leading-[19px] text-white">
+                      {getCategoryName(category)}
+                    </span>
+                  </button>
+                ))
+              )}
             </div>
           </div>
 
@@ -183,4 +167,6 @@ export default function Hero({ dir, isRTL }: HeroProps) {
       </div>
     </div>
   );
-}
+};
+
+export default Hero;

@@ -19,6 +19,7 @@ interface CircuitNavigationProps {
 export default function CircuitNavigation({ circuitId, userLocation, onClose }: CircuitNavigationProps) {
   const [routeId, setRouteId] = useState<string | null>(null);
   const [currentPOIIndex, setCurrentPOIIndex] = useState(0);
+  const [lastTraceTime, setLastTraceTime] = useState<number>(0);
   
   // API hooks
   const [startRoute, { isLoading: isStarting }] = useStartRouteMutation();
@@ -29,6 +30,37 @@ export default function CircuitNavigation({ circuitId, userLocation, onClose }: 
   const { data: routeData, isLoading: isLoadingRoute } = useGetRouteByIdQuery(routeId || '', {
     skip: !routeId,
   });
+
+  // Automatic GPS tracking - send trace every 30 seconds while route is active
+  useEffect(() => {
+    if (!routeId || !userLocation) return;
+
+    const sendGPSTrace = async () => {
+      const now = Date.now();
+      // Send trace every 30 seconds (30000ms)
+      if (now - lastTraceTime < 30000) return;
+
+      try {
+        console.log('📍 Sending automatic GPS trace:', userLocation);
+        await addTrace({
+          routeId,
+          latitude: userLocation.lat,
+          longitude: userLocation.lng,
+        }).unwrap();
+        setLastTraceTime(now);
+      } catch (error) {
+        console.error('Failed to send GPS trace:', error);
+      }
+    };
+
+    // Send trace immediately when location changes
+    sendGPSTrace();
+
+    // Set up interval for continuous tracking
+    const interval = setInterval(sendGPSTrace, 30000); // Every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [routeId, userLocation, lastTraceTime, addTrace]);
 
   const handleStartRoute = async () => {
     if (!userLocation) {

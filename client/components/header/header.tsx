@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, LogOut, User, LayoutDashboard } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/store";
 import { logOut } from "@/services/slices/authSlice";
 import Image from "next/image";
+import { gsap } from "gsap";
 import LanguageSelector from "./LanguageSelector";
 import Login from "../auth/Login";
 import SignUp from "../auth/SignUp";
@@ -16,6 +17,7 @@ import ResetPassword from "../auth/ResetPassword";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { useCheckAdminRightsQuery } from "@/services/api/UserApi";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,12 +49,20 @@ export default function Header({
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
   
+  // Check admin rights from backend
+  const { data: adminData } = useCheckAdminRightsQuery(undefined, {
+    skip: !user, // Only run if user is logged in
+  });
+  
   const [menuOpen, setMenuOpen] = useState(false);
   const [showTopBanner, setShowTopBanner] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+
+  const bannerRef = useRef<HTMLDivElement | null>(null);
+  const navRef = useRef<HTMLDivElement | null>(null);
   
   // États pour le flux de réinitialisation de mot de passe
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
@@ -91,12 +101,61 @@ export default function Header({
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowTopBanner(window.scrollY <= 50);
-      setIsScrolled(window.scrollY > 10);
+      const scrolled = window.scrollY > 10;
+      setIsScrolled(scrolled);
+
+      // Smoothly hide the top banner on first scroll
+      if (scrolled && showTopBanner && bannerRef.current) {
+        gsap.to(bannerRef.current, {
+          y: -50,
+          opacity: 0,
+          duration: 0.4,
+          ease: "power2.out",
+          onComplete: () => setShowTopBanner(false),
+        });
+      }
+
+      // Animate navbar background + blur
+      if (navRef.current) {
+        if (scrolled) {
+          gsap.to(navRef.current, {
+            backgroundColor: "rgba(255,255,255,0.9)",
+            backdropFilter: "blur(10px)",
+            borderColor: "rgba(229,231,235,1)",
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(navRef.current, {
+            backgroundColor: "rgba(255,255,255,0)",
+            backdropFilter: "blur(0px)",
+            borderColor: "rgba(255,255,255,0.1)",
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        }
+      }
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [showTopBanner]);
+
+  // When returning to top, show the banner again with animation
+  useEffect(() => {
+    if (!isScrolled && !showTopBanner) {
+      setShowTopBanner(true);
+    }
+  }, [isScrolled, showTopBanner]);
+
+  useEffect(() => {
+    if (showTopBanner && bannerRef.current) {
+      gsap.fromTo(
+        bannerRef.current,
+        { y: -50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }
+      );
+    }
+  }, [showTopBanner]);
 
   // Reusable Profile Dropdown Component
   const ProfileDropdown = () => (
@@ -129,7 +188,7 @@ export default function Header({
             <span>{t("header.profile") || "Profile"}</span>
           </Link>
         </DropdownMenuItem>
-        {user?.role === 'admin' && (
+        {adminData?.isAdmin && (
           <DropdownMenuItem asChild>
             <Link href="/admin" className="cursor-pointer w-full flex items-center">
               <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -151,7 +210,7 @@ export default function Header({
       <nav className="fixed top-0 w-full z-50 transition-all duration-300">
         {/* Top Banner */}
         {showTopBanner && (
-          <div className={`${isHomePage ? 'border-b border-white/10' : 'bg-[#02355E]'} transition-all duration-300`}>
+          <div ref={bannerRef} className={`${isHomePage ? 'border-b border-white/10' : 'bg-[#02355E]'} transition-all duration-300`}>
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5">
               <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-2 lg:gap-0">
                 <p className={`hidden sm:block text-xs sm:text-sm font-normal text-center lg:text-left ${isHomePage ? 'text-white' : 'text-white'}`}>
@@ -189,13 +248,14 @@ export default function Header({
 
         {/* Main Navigation */}
         <div
+          ref={navRef}
           className={`
           transition-all duration-300
           ${
             !isHomePage
               ? "bg-white border-b border-gray-200"
               : isScrolled
-              ? "border-b border-white/20 bg-[#02355E]/80 backdrop-blur-lg"
+              ? "border-b border-gray-200 bg-white/90 backdrop-blur-lg"
               : "border-b border-white/10 bg-transparent"
           }
         `}
@@ -207,14 +267,14 @@ export default function Header({
               <div className="flex md:hidden justify-between items-center w-full">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className={`p-2 ${isHomePage ? 'text-white' : 'text-black'}`}
+                  className={`p-2 ${(isHomePage && !isScrolled) ? 'text-white' : 'text-black'}`}
                 >
                   {menuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
                 <div className="flex-1 flex justify-center">
                   <div onClick={() => router.push(`/${locale}`)} role="button" tabIndex={0} className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center cursor-pointer">
                     <Image
-                      src={isHomePage ? "/images/logo.png" : "/images/logo-nonhomepage.png"}
+                      src={(isHomePage && !isScrolled) ? "/images/logo.png" : "/images/logo-nonhomepage.png"}
                       alt="GO-FEZ Logo"
                       width={64}
                       height={64}
@@ -244,7 +304,7 @@ export default function Header({
                     <a
                       key={key}
                       href={key === 'home' ? '/' : `/${key}`}
-                      className={`${isHomePage ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
+                    className={`${(isHomePage && !isScrolled) ? 'text-white' : 'text-black'} hover:text-emerald-400 transition-colors duration-200 text-sm lg:text-base font-medium whitespace-nowrap`}
                     >
                       {t(`nav.${key}`)}
                     </a>
@@ -254,7 +314,7 @@ export default function Header({
                 <div className="absolute left-1/2 transform -translate-x-1/2">
                   <div onClick={() => router.push(`/${locale}`)} role="button" tabIndex={0} className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex items-center justify-center cursor-pointer">
                     <Image
-                      src={isHomePage ? "/images/logo.png" : "/images/logo-nonhomepage.png"}
+                      src={(isHomePage && !isScrolled) ? "/images/logo.png" : "/images/logo-nonhomepage.png"}
                       alt="GO-FEZ Logo"
                       width={64}
                       height={64}

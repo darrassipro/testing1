@@ -169,6 +169,15 @@ providerRegister: builder.mutation({
       }),
       invalidatesTags: ['Users'],
     }),
+
+    // Check if user has admin rights
+    checkAdminRights: builder.query({
+      query: () => ({
+        url: "/api/users/check-admin",
+        method: "GET",
+      }),
+      providesTags: ['User'],
+    }),
   }),
 });
 
@@ -196,6 +205,7 @@ export const {
   useSuspendUserMutation,
   useDeleteUserMutation,
   useUpdateUserRoleMutation,
+  useCheckAdminRightsQuery,
 } = userApi;
 
 // Export de l'API pour l'utiliser dans le store

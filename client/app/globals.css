@@ -611,9 +611,40 @@
 
 /* BigNoodleTitling Font Import (if needed) */
 @import url('https://fonts.cdnfonts.com/css/big-noodle-titling');
+@import url('https://fonts.cdnfonts.com/css/bignoodletitling');
 
 /* Poppins Font Import */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Roboto + Six Caps fallback import (en secours si next/font ne charge pas) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Six+Caps&display=swap');
+
+/* Fallback explicite: applique la variable next/font si disponible, sinon la police Google importée */
+.font-sixcaps {
+  font-family: var(--font-six-caps), "Six Caps", var(--font-tajawal), var(--font-ibm-plex-sans-arabic), var(--font-cairo), sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Classes utilitaires demandées */
+.six-caps-regular {
+  font-family: "Six Caps", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.roboto {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+/* Renforcement de la pile BigNoodle pour couvrir variantes de nom */
+.bn {
+  font-family: 'BigNoodleTitling', 'BigNoodle Titling', Impact, sans-serif;
+}
 
 
 

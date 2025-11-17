@@ -9,7 +9,8 @@ interface StatsCardProps {
 
 export default function StatsCard({ title, value, subtitle, isPositive = true }: StatsCardProps) {
   return (
-    <div className="bg-white border border-[#E0E0E0] rounded-[14px] w-full sm:w-full lg:w-auto lg:min-w-[200px] xl:w-[258.62px] h-[140px] sm:h-[155px] hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer p-4 sm:p-5">
+    <div className="bg-white border border-[#E0E0E0] rounded-[14px] w-full h-[140px] sm:h-[155px] 
+      hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer p-4 sm:p-5">
       {/* Content Container */}
       <div className="flex flex-col items-start gap-3 sm:gap-4 h-full">
         {/* Title Row */}
@@ -34,3 +35,4 @@ export default function StatsCard({ title, value, subtitle, isPositive = true }:
     </div>
   );
 }
+

@@ -70,6 +70,9 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
+          'var(--font-roboto)',
+          'var(--font-tajawal)',
+          'var(--font-ibm-plex-sans-arabic)',
           'var(--font-cairo)',
           'sans-serif'
         ],
@@ -83,6 +86,20 @@ const config: Config = {
         ],
         arabic: [
           'var(--font-ibm-plex-sans-arabic)',
+          'sans-serif'
+        ],
+        roboto: [
+          'var(--font-roboto)',
+          'var(--font-tajawal)',
+          'var(--font-ibm-plex-sans-arabic)',
+          'var(--font-cairo)',
+          'sans-serif'
+        ],
+        sixcaps: [
+          'var(--font-six-caps)',
+          'var(--font-tajawal)',
+          'var(--font-ibm-plex-sans-arabic)',
+          'var(--font-cairo)',
           'sans-serif'
         ],
         poppins: [

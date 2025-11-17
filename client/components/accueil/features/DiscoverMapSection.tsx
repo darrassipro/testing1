@@ -9,6 +9,7 @@ import { useGetAllCategoriesQuery } from "@/services/api/CategoryApi";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { POI } from "@/services/api/PoiApi";
+import { useGPSTracker } from "@/hooks/useGPSTracker";
 
 // Dynamically import Map to avoid SSR issues
 const InteractiveMap = dynamic<{
@@ -22,7 +23,7 @@ const InteractiveMap = dynamic<{
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[680px] bg-gray-200 rounded-[38px] flex items-center justify-center">
+      <div className="w-full h-full bg-gray-200 rounded-[38px] flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#007036]"></div>
           <p className="text-gray-500 mt-4">Loading map...</p>
@@ -35,6 +36,7 @@ const InteractiveMap = dynamic<{
 interface DiscoverMapSectionProps {
   locale: string;
   isRTL: boolean;
+  height?: number | string;
 }
 
 interface CategoryFilter {
@@ -43,7 +45,7 @@ interface CategoryFilter {
   icon?: string;
 }
 
-export default function DiscoverMapSection({ locale, isRTL }: DiscoverMapSectionProps) {
+export default function DiscoverMapSection({ locale, isRTL, height }: DiscoverMapSectionProps) {
   const t = useTranslations();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,27 +55,28 @@ export default function DiscoverMapSection({ locale, isRTL }: DiscoverMapSection
   const { data: poisData, isLoading: poisLoading } = useGetAllPOIsQuery();
   const { data: categoriesData, isLoading: categoriesLoading } = useGetAllCategoriesQuery();
 
-  // Get user location
+  // GPS Tracking with real-time updates
+  const { position: gpsPosition, error: gpsError } = useGPSTracker(true);
+
+  // Update user location from GPS tracker with real-time updates
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.log("Location access denied:", error);
-          // Fallback to Fez center
-          setUserLocation({ lat: 34.0331, lng: -4.9998 });
-        }
-      );
-    } else {
-      // Fallback to Fez center
+    if (gpsPosition) {
+      const coords = gpsPosition.coords as { latitude: number; longitude: number; accuracy: number };
+      setUserLocation({
+        lat: coords.latitude,
+        lng: coords.longitude,
+      });
+      console.log('[Homepage Map] GPS updated:', {
+        lat: coords.latitude,
+        lng: coords.longitude,
+        accuracy: coords.accuracy
+      });
+    } else if (!userLocation) {
+      // Fallback to Fez center only if no GPS and no previous location
+      console.log('[Homepage Map] Using fallback location');
       setUserLocation({ lat: 34.0331, lng: -4.9998 });
     }
-  }, []);
+  }, [gpsPosition]);
 
   const pois = poisData?.pois || [];
   const categories = categoriesData?.data || [];
@@ -136,13 +139,13 @@ export default function DiscoverMapSection({ locale, isRTL }: DiscoverMapSection
   const isLoading = poisLoading || categoriesLoading;
 
   return (
-    <div className="py-8 md:py-12 lg:py-20 bg-white">
+    <div className="py-8 md:py-12 lg:py-20 bg-white roboto">
       <div className="max-w-[1440px] mx-auto px-[15px] md:px-4 sm:px-6 lg:px-[70px]">
         {/* Header Section  */}
         <div className="flex flex-col gap-4 mb-8">
           {/* Title */}
           <h2
-            className="font-['BigNoodleTitling'] text-4xl md:text-[64px] font-normal leading-[71px] text-black text-left md:text-center"
+            className="text-3xl md:text-[55px] font-regular mb-2 text-gray-900 leading-tight uppercase font-noodle"
             style={{ fontWeight: 400 }}
           >
             {t("discoverMap.title") || "Discover Fez in Real Time"}
@@ -177,7 +180,7 @@ export default function DiscoverMapSection({ locale, isRTL }: DiscoverMapSection
             )}
           />
         )}
-        <span className="font-['Inter'] font-medium text-[20.5882px] leading-[25px] whitespace-nowrap">
+        <span className="roboto font-medium text-[20.5882px] leading-[25px] whitespace-nowrap">
           {category.name}
         </span>
       </button>
@@ -194,7 +197,7 @@ export default function DiscoverMapSection({ locale, isRTL }: DiscoverMapSection
         : "bg-white border-[#D9D9D9] text-black hover:bg-gray-50"       // Not Selected
     )}
   >
-    <span className="font-['Inter'] font-medium text-[20.5882px] leading-[25px]">
+    <span className="roboto font-medium text-[20.5882px] leading-[25px]">
       {t("common.viewAll") || "View all"}
     </span>
   </button>
@@ -208,7 +211,7 @@ export default function DiscoverMapSection({ locale, isRTL }: DiscoverMapSection
             className="relative rounded-[38.209px] overflow-hidden"
             style={{
               width: '1447.92px',
-              height: '1111px',
+              height: typeof height === 'number' ? `${height}px` : (height || '520px'),
               maxWidth: '100%',
               background: '#D9D9D9',
             }}

@@ -15,6 +15,8 @@ import CircuitCard from '@/components/circuits/CircuitCard';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Route, Sparkles } from 'lucide-react';
+import Header from '@/components/header/header';
+import { useRouter } from '@/i18n/navigation';
 
 interface CircuitsPageProps {
 	params: Promise<{
@@ -24,6 +26,7 @@ interface CircuitsPageProps {
 
 export default function CircuitsPage({ params }: CircuitsPageProps) {
 	const { locale } = use(params);
+	const router = useRouter();
 	const t = useTranslations('CircuitsPage');
 	const [activeTab, setActiveTab] = useState('all');
 
@@ -75,6 +78,16 @@ export default function CircuitsPage({ params }: CircuitsPageProps) {
 	const allCircuits = [...regularCircuits, ...customCircuits];
 
 	return (
+		<div className="h-screen pt-7 md:pt-[70px]">
+	    <Header 
+            locale={locale} 
+            isRTL={locale === 'ar'} 
+            onLanguageChange={(lang: 'en' | 'fr' | 'ar') => {
+				try {
+					router.replace(`/${lang}/circuits`);
+				} catch {}
+			}}
+        />
 		<main className="container mx-auto max-w-7xl px-4 py-24">
 			<div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
 				<div>
@@ -140,5 +153,6 @@ export default function CircuitsPage({ params }: CircuitsPageProps) {
 				</TabsContent>
 			</Tabs>
 		</main>
+		</div>
 	);
 }

@@ -180,41 +180,6 @@ const SignUp: React.FC<SignUpProps> = ({ onClose, onSwitchToLogin }) => {
     );
   }
 
-  const handleGoogleSignup = async () => {
-    try {
-      const googleData = {
-        provider: 'google',
-        id: 'google-id-123',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@gmail.com',
-      };
-      await providerRegister(googleData).unwrap();
-      toast.success(t('success'));
-      onSwitchToLogin?.();
-    } catch (err: any) {
-      toast.error(err?.data?.message || t('error'));
-    }
-  };
-
-  const handleFacebookSignup = async () => {
-    try {
-      const facebookData = {
-        provider: 'facebook',
-        id: 'facebook-id-456',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        email: 'jane.smith@facebook.com',
-        phone: '+212600000000',
-      };
-      await providerRegister(facebookData).unwrap();
-      toast.success(t('success'));
-      onSwitchToLogin?.();
-    } catch (err: any) {
-      toast.error(err?.data?.message || t('error'));
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={onClose} />
@@ -330,8 +295,8 @@ const SignUp: React.FC<SignUpProps> = ({ onClose, onSwitchToLogin }) => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                                        <GmailLoginButton onClick={handleGoogleSignup} color="emerald" />
-                    <FacebookLoginButton onClick={handleFacebookSignup} color="blue" />
+<GmailLoginButton color="emerald" />
+  <FacebookLoginButton color="blue" />
                   </div>
                 </Form>
               )}

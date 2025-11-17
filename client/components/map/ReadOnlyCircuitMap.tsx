@@ -19,6 +19,12 @@ import { RootState } from '@/lib/store';
 import Login from '@/components/auth/Login';
 import SignUp from '@/components/auth/SignUp';
 import { useGPSTracker } from '@/hooks/useGPSTracker';
+import { 
+  useStartRouteMutation, 
+  useGetRouteByIdQuery, 
+  useAddVisitedTraceMutation,
+  useRemovePOIFromRouteMutation 
+} from '@/services/api/RouteApi';
 
 const DEFAULT_CENTER = { lat: 34.0331, lng: -4.9998 }; // Fès, MA
 const DEFAULT_ZOOM = 12;
@@ -78,8 +84,51 @@ export default function ReadOnlyCircuitMap({ pois = [], locale, circuit }: ReadO
   const [viewerSrc, setViewerSrc] = React.useState<string | null>(null);
   const [viewerKind, setViewerKind] = React.useState<'image' | 'video' | 'virtualtour'>('image');
   
+  // Route Management
+  const [activeRouteId, setActiveRouteId] = React.useState<string | null>(null);
+  const [lastTraceTime, setLastTraceTime] = React.useState<number>(0);
+  const [hoveredPoiId, setHoveredPoiId] = React.useState<string | null>(null);
+  
+  // API hooks for route management
+  const [startRoute, { isLoading: isStartingRoute }] = useStartRouteMutation();
+  const [addTrace, { isLoading: isAddingTrace }] = useAddVisitedTraceMutation();
+  const [removePOI, { isLoading: isRemovingPOI }] = useRemovePOIFromRouteMutation();
+  
+  // Fetch active route details
+  const { data: activeRouteData, refetch: refetchRoute } = useGetRouteByIdQuery(activeRouteId || '', {
+    skip: !activeRouteId,
+    pollingInterval: 5000, // Refresh every 5 seconds
+    refetchOnMountOrArgChange: false,
+  });
+  
   // GPS Tracking
   const { position: userPosition, error: gpsError, startTracking, stopTracking } = useGPSTracker(true);
+
+  // Automatic GPS trace sending when route is active
+  React.useEffect(() => {
+    if (!activeRouteId || !userPosition) return;
+
+    const sendGPSTrace = async () => {
+      const now = Date.now();
+      if (now - lastTraceTime < 30000) return; // Every 30 seconds
+
+      try {
+        console.log('📍 Sending automatic GPS trace');
+        await addTrace({
+          routeId: activeRouteId,
+          latitude: userPosition.coords.latitude,
+          longitude: userPosition.coords.longitude,
+        }).unwrap();
+        setLastTraceTime(now);
+      } catch (error) {
+        console.error('Failed to send GPS trace:', error);
+      }
+    };
+
+    sendGPSTrace();
+    const interval = setInterval(sendGPSTrace, 30000);
+    return () => clearInterval(interval);
+  }, [activeRouteId, userPosition, lastTraceTime, addTrace]);
 
   // Debug logging for GPS and user
   React.useEffect(() => {
@@ -526,70 +575,116 @@ export default function ReadOnlyCircuitMap({ pois = [], locale, circuit }: ReadO
           )}
 
           {!selectedPoiId && (
-          <div className="mt-4  flex gap-2">
+          <div className="mt-4 flex flex-col gap-2">
+            {/* GPS Status and Controls */}
             {circuit?.id && (
-              <Button
-                type="button"
-                size="sm"
-                className="h-9 px-6 rounded-tl-xl rounded-br-xl rounded-bl-none rounded-tr-none bg-green-800 w-full"
-                onClick={async () => {
-                  try {
+              <>
+                {gpsError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-red-800 text-sm mb-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span className="font-medium">GPS Error</span>
+                    </div>
+                    <p className="text-xs text-red-700 mb-2">{gpsError?.message || 'GPS error occurred'}</p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full border-red-300 text-red-700 hover:bg-red-50"
+                      onClick={() => {
+                        stopTracking();
+                        setTimeout(() => startTracking(), 100);
+                        toast.info('Retrying GPS...');
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                      </svg>
+                      Retry GPS
+                    </Button>
+                  </div>
+                )}
+                
+                {!userPosition && !gpsError && (
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-amber-800 text-sm mb-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span className="font-medium">GPS Required</span>
+                    </div>
+                    <p className="text-xs text-amber-700 mb-2">Please enable GPS to start navigation</p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full border-amber-300 text-amber-700 hover:bg-amber-50"
+                      onClick={async () => {
+                        const granted = await requestGeolocationPermission();
+                        if (granted) {
+                          toast.success('GPS enabled successfully');
+                          startTracking();
+                        } else {
+                          toast.error('GPS permission denied. Please enable location in your browser settings.');
+                        }
+                      }}
+                    >
+                      <Navigation className="w-3 h-3 mr-2" />
+                      Enable GPS
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex gap-2">
+              {circuit?.id && (
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-9 px-6 rounded-tl-xl rounded-br-xl rounded-bl-none rounded-tr-none bg-green-800 w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={async () => {
                     if (!user) {
                       setIsLoginOpen(true);
                       toast.error('Veuillez vous connecter pour démarrer le circuit');
                       return;
                     }
-                    const granted = await requestGeolocationPermission();
-                    if (!granted) {
-                      toast.error('L\'activation du GPS est requise');
+                    if (!userPosition) {
+                      toast.error('Waiting for GPS location. Please enable GPS and try again.');
                       return;
                     }
-                    setIsStarting(true);
-                    // Obtenir la position actuelle exacte pour l'envoi
-                    const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
-                      navigator.geolocation.getCurrentPosition(resolve, reject, {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0,
-                      });
-                    });
-                    const latitude = pos.coords.latitude;
-                    const longitude = pos.coords.longitude;
-                    const pois = normalizedPois.map(p => p.id);
-                    const resp = await fetch(`${SERVER_GATEWAY_DOMAIN}/api/routes/start`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      credentials: 'include',
-                      body: JSON.stringify({ circuitId: circuit.id, latitude, longitude, pois })
-                    });
-                    if (!resp.ok) {
-                      throw new Error(`HTTP ${resp.status}`);
+                    // Start route directly
+                    try {
+                      const result = await startRoute({
+                        circuitId: circuit.id,
+                        latitude: userPosition.coords.latitude,
+                        longitude: userPosition.coords.longitude,
+                      }).unwrap();
+                      
+                      if (result.status && result.data?.firstTrace) {
+                        const newRouteId = result.data.firstTrace.routeId;
+                        // Navigate to route page
+                        router.push(`/circuits/rout/${newRouteId}`);
+                        toast.success('Route started! Redirecting to navigation...');
+                      }
+                    } catch (error: any) {
+                      console.error('Failed to start route:', error);
+                      toast.error(error?.data?.message || 'Failed to start route');
                     }
-                    const json = await resp.json();
-                    const routeId = json?.data?.firstTrace?.routeId || json?.data?.route?.id;
-                    if (routeId) {
-                      toast.success('Route démarrée');
-                      router.push(`/circuits/rout/${routeId}`);
-                    } else {
-                      toast.error('Réponse invalide du serveur');
-                    }
-                  } catch (e) {
-                    toast.error('Erreur lors du démarrage');
-                  } finally {
-                    setIsStarting(false);
-                  }
-                }}
-                disabled={isStarting}
-              >
-                <Navigation className="w-3 h-3 mr-2" />
-                {isStarting ? 'Starting...' : 'Start'}
+                  }}
+                  disabled={!userPosition || !!gpsError || isStartingRoute}
+                >
+                  <Navigation className="w-3 h-3 mr-2" />
+                  {isStartingRoute ? 'Starting...' : 'Start'}
+                </Button>
+              )}
+              {/* ajoutez fonctionaliter de patage  */}
+              <Button variant="ghost" size="sm" className="h-9 px-6 rounded-tl-xl rounded-br-xl rounded-bl-none rounded-tr-none bg-white text-black border border-green-500 w-full" onClick={handleShare}>
+                <Share className="w-3 h-3 mr-2" />
+                Share
               </Button>
-            )}
-            {/* ajoutez fonctionaliter de patage  */}
-            <Button variant="ghost" size="sm" className="h-9 px-6 rounded-tl-xl rounded-br-xl rounded-bl-none rounded-tr-none bg-white text-black border border-green-500 w-full" onClick={handleShare}>
-              <Share className="w-3 h-3 mr-2" />
-              Share
-            </Button>
+            </div>
           </div>
           )}
 
@@ -836,14 +931,6 @@ export default function ReadOnlyCircuitMap({ pois = [], locale, circuit }: ReadO
             </div>
           </div>
         )}
-        {!gpsError && userPosition && (
-          <div className="absolute top-3 left-3 z-[1010] bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg text-sm">
-            <div className="flex items-center gap-2">
-              <Navigation className="w-4 h-4" />
-              <span>GPS Active (±{userPosition.coords.accuracy.toFixed(0)}m)</span>
-            </div>
-          </div>
-        )}
         
         {/* Refresh GPS button */}
         {gpsError && (
@@ -898,6 +985,7 @@ export default function ReadOnlyCircuitMap({ pois = [], locale, circuit }: ReadO
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
           </Button>
         </div>
+        
         <Map
           ref={mapRef}
           initialViewState={{ latitude: center.latitude, longitude: center.longitude, zoom: DEFAULT_ZOOM }}
@@ -949,19 +1037,63 @@ export default function ReadOnlyCircuitMap({ pois = [], locale, circuit }: ReadO
           {normalizedPois.map((poi, index) => {
             const isStart = index === 0;
             const isEnd = index === normalizedPois.length - 1;
+            
+            // Check if this POI is visited or removed
+            const routeData: any = activeRouteData?.data;
+            const visitedTraces = routeData?.visitedTraces || [];
+            const removedTraces = routeData?.removedTraces || [];
+            const isVisited = visitedTraces.some(trace => trace.idPoi === poi.id);
+            const isRemoved = removedTraces.some(trace => trace.idPoi === poi.id);
+            const isHovered = hoveredPoiId === poi.id;
+            
             return (
-              <Marker key={poi.id} longitude={poi.lng} latitude={poi.lat} anchor="bottom" onClick={() => handleSelectPoi(poi)}>
-                <div className="relative cursor-pointer">
-                  <div className="w-12 h-12 border-2 border-primary bg-accent rounded-full overflow-hidden shadow-xl">
+              <Marker key={poi.id} longitude={poi.lng} latitude={poi.lat} anchor="bottom">
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setHoveredPoiId(poi.id)}
+                  onMouseLeave={() => setHoveredPoiId(null)}
+                >
+                  {/* POI Marker */}
+                  <div 
+                    className={cn(
+                      "w-12 h-12 border-2 rounded-full overflow-hidden shadow-xl cursor-pointer transition-all relative",
+                      isVisited ? "border-green-500 bg-green-50 opacity-70" : 
+                      isRemoved ? "border-gray-400 bg-gray-100 opacity-40 grayscale" : 
+                      "border-primary bg-accent",
+                      isHovered && !isRemoved && "scale-110"
+                    )}
+                    onClick={() => !isRemoved && handleSelectPoi(poi)}
+                  >
                     <img 
                       src={poi.img || 'https://placehold.co/100x100?text=POI'} 
                       alt={poi.label} 
-                      className="w-full h-full object-cover" 
+                      className={cn(
+                        "w-full h-full object-cover transition-all",
+                        isRemoved && "opacity-50"
+                      )}
                     />
+                    
+                    {/* Cross overlay for removed POIs */}
+                    {isRemoved && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-md">
-                    {index + 1}
+                  
+                  {/* POI Number Badge */}
+                  <div className={cn(
+                    "absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-md",
+                    isVisited ? "bg-green-500 text-white" : 
+                    isRemoved ? "bg-gray-400 text-white" : 
+                    "bg-primary text-primary-foreground"
+                  )}>
+                    {isVisited ? '✓' : isRemoved ? '✕' : index + 1}
                   </div>
+                  
+                  {/* Start/End Indicators */}
                   {isStart && (
                     <div className="absolute -top-1 -right-1 bg-white text-green-600 rounded-full p-1 shadow">
                       <MapPinIcon className="w-3.5 h-3.5" />
@@ -970,6 +1102,28 @@ export default function ReadOnlyCircuitMap({ pois = [], locale, circuit }: ReadO
                   {isEnd && normalizedPois.length > 1 && (
                     <div className="absolute -top-1 -right-1 bg-white text-red-600 rounded-full p-1 shadow">
                       <FlagIcon className="w-3.5 h-3.5" />
+                    </div>
+                  )}
+                  
+                  {/* POI Name Label on Hover */}
+                  {isHovered && (
+                    <div className={cn(
+                      "absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg shadow-lg text-xs font-medium whitespace-nowrap z-10",
+                      isRemoved ? "bg-gray-100 text-gray-600" : "bg-white text-gray-800"
+                    )}>
+                      <div className="flex items-center gap-1.5">
+                        <span>{poi.label}</span>
+                        {isRemoved && (
+                          <span className="text-[10px] bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
+                            Skipped
+                          </span>
+                        )}
+                        {isVisited && (
+                          <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
+                            Visited
+                          </span>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1018,6 +1172,7 @@ export default function ReadOnlyCircuitMap({ pois = [], locale, circuit }: ReadO
           )}
         </Map>
       </div>
+
       {isLoginOpen && (
         <Login
           onClose={() => setIsLoginOpen(false)}
